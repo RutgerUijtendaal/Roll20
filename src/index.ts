@@ -1,1 +1,3 @@
-on("chat:message", handleRoll)
+const environment: Environment = 'test'
+
+on('chat:message', handleStressCommand);

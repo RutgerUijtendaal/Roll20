@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/RutgerUijtendaal/Roll20#readme",
   "devDependencies": {
+    "@types/node": "^13.5.0",
     "heward": "0.0.1",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5"
