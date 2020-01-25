@@ -1,0 +1,31 @@
+{
+  "name": "roll20",
+  "version": "1.0.0",
+  "description": "DnD scripts",
+  "main": "index.ts",
+  "scripts": {
+    "test": "test",
+    "tsc": "tsc",
+    "deploy": "heward --script ./dist/index.js",
+    "tsd": "npm run tsc && npm run deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RutgerUijtendaal/Roll20.git"
+  },
+  "keywords": [
+    "DnD",
+    "Roll20"
+  ],
+  "author": "Rutger Uijtendaal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RutgerUijtendaal/Roll20/issues"
+  },
+  "homepage": "https://github.com/RutgerUijtendaal/Roll20#readme",
+  "devDependencies": {
+    "heward": "0.0.1",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.7.5"
+  }
+}

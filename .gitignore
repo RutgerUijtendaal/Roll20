@@ -1,0 +1,8 @@
+# Dependencies 
+node_modules/
+
+# Build dir
+dist/
+
+# Dot files
+.env
