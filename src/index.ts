@@ -1,1 +1,1 @@
-console.log('hello');
+on("chat:message", handleRoll)
