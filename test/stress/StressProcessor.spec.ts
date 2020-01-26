@@ -9,10 +9,15 @@ import { Chatter } from '../../src/shared/Chatter';
 
 @suite
 class StressProcessorTest {
+  // @ts-ignore
   mockStressItemManager: StressItemManager;
+  // @ts-ignore
   mockStressStateManager: StressStateManager;
+  // @ts-ignore
   mockChatter: Chatter;
+  // @ts-ignore
   mockLogger: Logger;
+  // @ts-ignore
   stressProcessor: StressProcessor;
 
   before() {
@@ -30,7 +35,8 @@ class StressProcessorTest {
     this.stressProcessor.setLogger(instance(this.mockLogger));
   }
 
-  @test itShould_discardSilently_whenStressCharacterIsNull() {
+  @test
+  itShould_discardSilently_whenStressCharacterIsNull() {
     // Arrange
     const stressUpdate = TestBase.stressUpdateBase();
 
@@ -43,7 +49,8 @@ class StressProcessorTest {
     verify(this.mockStressStateManager.updateStressedCharacter(anything())).never();
   }
 
-  @test itShould_updateStressValue_whenAddingLessThanStepBreakpoint() {
+  @test
+  itShould_updateStressValue_whenAddingLessThanStepBreakpoint() {
     // Arrange
     const stressUpdate = TestBase.stressUpdateBase();
     const stressedCharacter = TestBase.stressedCharacterBase();
@@ -69,7 +76,8 @@ class StressProcessorTest {
     verify(this.mockStressStateManager.updateStressedCharacter(deepEqual(expected))).once();
   }
 
-  @test itShould_updateStresses_whenAddingMoreThanStepBreakpoint() {
+  @test 
+  itShould_updateStresses_whenAddingMoreThanStepBreakpoint() {
     // Arrange
     const stressUpdate = TestBase.stressUpdateBase();
     const stressedCharacter = TestBase.stressedCharacterBase();
@@ -96,7 +104,8 @@ class StressProcessorTest {
     verify(this.mockStressStateManager.updateStressedCharacter(deepEqual(expected))).once();
   }
 
-  @test itShould_notGoBelowZero_whenRemovingStress_fromGreaterThanZeroAmount() {
+  @test 
+  itShould_notGoBelowZero_whenRemovingStress_fromGreaterThanZeroAmount() {
     // Arrange
     const stressUpdate = TestBase.stressUpdateBase();
     const stressedCharacter = TestBase.stressedCharacterBase();
@@ -123,7 +132,8 @@ class StressProcessorTest {
     verify(this.mockStressStateManager.updateStressedCharacter(deepEqual(expected))).once();
   }
 
-  @test itShould_notGoBelowZero_whenRemovingStress_fromZeroAmount() {
+  @test 
+  itShould_notGoBelowZero_whenRemovingStress_fromZeroAmount() {
     // Arrange
     const stressUpdate = TestBase.stressUpdateBase();
     const stressedCharacter = TestBase.stressedCharacterBase();

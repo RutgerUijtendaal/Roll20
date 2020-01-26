@@ -12,7 +12,7 @@
     "noUnusedParameters": false,
     "removeComments": false,
     "sourceMap": false,
-    "strict": false,
+    "strict": true,
     "target": "es6",
     "watch": false,
   },

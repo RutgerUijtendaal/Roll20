@@ -6,36 +6,25 @@ export class ObjectHelper {
    * @see Source project, ts-deeply https://github.com/ykdr2017/ts-deepcopy
    * @see Code pen https://codepen.io/erikvullings/pen/ejyBYg
    */
-  public static deepCopy<T>(target: T): T {
+  public static deepCopy = <T>(target: T): T => {
     if (target === null) {
-      return target
+      return target;
     }
     if (target instanceof Date) {
-      return new Date(target.getTime()) as any
+      return new Date(target.getTime()) as any;
     }
-    // First part is for array and second part is for Realm.Collection
-    // if (target instanceof Array || typeof (target as any).type === 'string') {
-    if (typeof target === 'object') {
-      if (typeof target[Symbol.iterator] === 'function') {
-        const cp = [] as any[]
-        if ((target as any as any[]).length > 0) {
-          for (const arrayMember of target as any as any[]) {
-            cp.push(ObjectHelper.deepCopy(arrayMember))
-          }
-        }
-        return cp as any as T
-      } else {
-        const targetKeys = Object.keys(target)
-        const cp = {}
-        if (targetKeys.length > 0) {
-          for (const key of targetKeys) {
-            cp[key] = ObjectHelper.deepCopy(target[key])
-          }
-        }
-        return cp as T
-      }
+    if (target instanceof Array) {
+      const cp = [] as any[];
+      (target as any[]).forEach((v) => { cp.push(v); });
+      return cp.map((n: any) => ObjectHelper.deepCopy<any>(n)) as any;
     }
-    // Means that object is atomic
-    return target
-  }
+    if (typeof target === 'object' && target !== {}) {
+      const cp = { ...(target as { [key: string]: any }) } as { [key: string]: any };
+      Object.keys(cp).forEach(k => {
+        cp[k] = ObjectHelper.deepCopy<any>(cp[k]);
+      });
+      return cp as T;
+    }
+    return target;
+  };
 }

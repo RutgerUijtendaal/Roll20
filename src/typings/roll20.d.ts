@@ -463,7 +463,7 @@ declare function on(event: "change:campaign:turnorder", callback: (obj: Campaign
  * @param callback If callback is specified, the result of the chat message will be passed to it instead of appearing in the chat. The parameter of the callback method is an array of message objects.
  * @param options If options.noarchive is true, the message will not be added to the chat archive. If options.use3d is true, dice rolls in the message will use the 3D dice feature. Options are not applicable if callback is specified.
  */
-declare function sendChat(speakingAs: string, message: string, callback?: (operations: ChatEventData[]) => void, options?: ChatMessageHandlingOptions): void;
+declare function sendChat(speakingAs: string, message: string, callback?: ((operations: ChatEventData[]) => void) | null, options?: ChatMessageHandlingOptions): void;
 
 /**
  * Returns the Campaign object. Since there is only one campaign, this global always points to the only campaign in the game.
