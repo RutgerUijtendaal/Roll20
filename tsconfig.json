@@ -1,18 +1,26 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "amd",
+    "allowJs": false,
+    "module": "commonjs",
     "moduleResolution": "node",
-    "sourceMap": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
+    "outDir": "js/",
+    "noEmitOnError": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "removeComments": false,
-    "noImplicitAny": false,
-    "outDir": "dist",
-    "outFile": "dist/index.js"
+    "sourceMap": false,
+    "strict": false,
+    "target": "es6",
+    "watch": false
   },
   "exclude": [
     "node_modules",
     ".npm"
+  ],
+  "include": [
+    "src/**/*.ts",
+    "webpack.config.ts"
   ]
 }

@@ -1,3 +1,3 @@
-const environment: Environment = 'test'
+import { StressCommandHandler } from './stress/StressCommandHandler';
 
-on('chat:message', handleStressCommand);
+new StressCommandHandler();

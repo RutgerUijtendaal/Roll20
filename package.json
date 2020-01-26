@@ -5,9 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "test": "test",
-    "tsc": "tsc",
-    "deploy": "heward --script ./dist/index.js",
-    "tsd": "npm run tsc && npm run deploy"
+    "deploy": "heward --script ./dist/bundle.js",
+    "build": "tsc && webpack",
+    "tsd": "tsc && webpack && npm run deploy"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,8 @@
     "@types/node": "^13.5.0",
     "heward": "0.0.1",
     "ts-node": "^8.6.2",
-    "typescript": "^3.7.5"
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   }
 }
