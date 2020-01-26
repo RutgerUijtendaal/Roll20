@@ -21,3 +21,4 @@ const stressCharisma: StressItem = {
 };
 
 export const stresses: StressItem[] = [stressStrenght, stressCharisma];
+ 

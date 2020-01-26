@@ -7,5 +7,8 @@ dist/
 # Transpile dir
 js/
 
+# Test reports
+.nyc_output/
+
 # Dot files
 .env

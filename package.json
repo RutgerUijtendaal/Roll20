@@ -4,10 +4,9 @@
   "description": "DnD scripts",
   "main": "index.ts",
   "scripts": {
-    "test": "test",
+    "test": "TS_NODE_FILES=true nyc mocha --require ts-node/register --config ./.mocharc.json",
     "deploy": "heward --script ./dist/bundle.js",
-    "build": "tsc && webpack",
-    "tsd": "tsc && webpack && npm run deploy"
+    "tsd": "npm run test && tsc && webpack && npm run deploy"
   },
   "repository": {
     "type": "git",
@@ -24,9 +23,17 @@
   },
   "homepage": "https://github.com/RutgerUijtendaal/Roll20#readme",
   "devDependencies": {
+    "@types/chai": "^4.2.7",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^13.5.0",
     "@types/webpack": "^4.41.3",
+    "chai": "^4.2.0",
     "heward": "0.0.1",
+    "mocha": "^7.0.1",
+    "mocha-typescript": "^1.1.17",
+    "nyc": "^15.0.0",
+    "source-map-support": "^0.5.16",
+    "ts-mockito": "^2.5.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5",
     "webpack": "^4.41.5",

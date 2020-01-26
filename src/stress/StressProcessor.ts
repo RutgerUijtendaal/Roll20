@@ -17,6 +17,11 @@ export class StressProcessor {
     this.stressStateManager = stressStateManager;
   }
 
+  // Used for testing;
+  setLogger(logger: Logger) {
+    this.logger = logger;
+  }
+
   /**
    * Add stress to a character. If character is not currently registered this request is
    * discarded silently.
@@ -24,7 +29,7 @@ export class StressProcessor {
    * @param stressUpdate obj containing who to update stress for and by what amount.
    */
   processStressAddition(stressUpdate: StressUpdate) {
-    const stressCharacter = this.stressStateManager.getStressedCharacter(
+    let stressCharacter = this.stressStateManager.getStressedCharacter(
       stressUpdate
     );
 
@@ -36,9 +41,8 @@ export class StressProcessor {
     }
 
     const diff = this.getStressStepDifference(stressCharacter, stressUpdate);
-
-    this.updateStressAmount(stressCharacter, stressUpdate);
-    this.addStresses(stressCharacter, diff);
+    stressCharacter = this.updateStressAmount(stressCharacter, stressUpdate);
+    stressCharacter = this.addStresses(stressCharacter, diff);
 
     this.stressStateManager.updateStressedCharacter(stressCharacter);
   }
@@ -122,7 +126,7 @@ export class StressProcessor {
     stressedCharacter: StressedCharacter,
     stressUpdate: StressUpdate
   ): StressedCharacter {
-    stressedCharacter.stressValue = Math.min(stressedCharacter.stressValue += stressUpdate.amount, 0);
+    stressedCharacter.stressValue = Math.max(stressedCharacter.stressValue += stressUpdate.amount, 0);
     this.logger.debug('Updated stress to new value: ' + stressedCharacter.stressValue + ' on character ' + stressedCharacter.name)
     return stressedCharacter;
   }

@@ -1,7 +1,7 @@
 import { Configuration, DefinePlugin } from 'webpack';
 
 const config: Configuration = {
-  entry: './js/src/index.js',
+  entry: './src/index.ts',
   mode: 'development',
   output: {
     filename: 'bundle.js',
