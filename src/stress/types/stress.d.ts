@@ -1,9 +1,3 @@
-interface StressManager {
-  initialize: () => void;
-  addNewStressedCharacter: (player: PlayerCharacter) => void;
-  addStress: (stressUpdate: StressUpdate) => void;
-}
-
 interface PlayerCharacter {
   id: string;
   name: string;
@@ -20,9 +14,9 @@ interface StressUpdate extends PlayerCharacter {
 
 interface StressItem {
   name: string;
-  added: Date;
-  doEffect: (playerId: string) => void;
-  undoEffect: (playerId: string) => void;
+  added?: number;
+  doEffect: (stressedCharacter: StressedCharacter) => void;
+  undoEffect: (stressedCharacter: StressedCharacter) => void;
 }
 
 interface StressState {

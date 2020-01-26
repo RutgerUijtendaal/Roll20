@@ -13,7 +13,7 @@ export class StressCommandHandler implements CommandHandler {
 
   register() {
     this.logger.info('Registering Stress module');
-    
+
     on("chat:message", (message: ChatEventData) => {
       this.handle(message);
     })
@@ -64,7 +64,7 @@ export class StressCommandHandler implements CommandHandler {
     }
   }
 
-  extractStressAmount(message: string): number {
+  private extractStressAmount(message: string): number | null {
     const numbersRegex = /^[0-9]+$/;
     const amount = message.substr(message.indexOf(' ') + 1);
   
@@ -72,10 +72,9 @@ export class StressCommandHandler implements CommandHandler {
       return +amount;
     }
   
-    return null;
-  
-    this.logger.error('Stress update command contained more than just numbers');
     // TODO
-    // add way to inform player that his command sucks.
+    // add way to inform player that his/her command sucks.
+    this.logger.error('Stress update command contained more than just numbers');
+    return null;
   }
 }

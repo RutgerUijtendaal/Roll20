@@ -1,20 +1,24 @@
 import { Logger } from '../shared/Logger';
 import { environment } from '../env';
+import { StressItemManager } from './StressItemManager';
 
 export class StressStateManager {
+  readonly stressModifier = 5;
+  stressItemManager: StressItemManager;
   logger: Logger;
-  state: StressState = state.StressNS;
 
   constructor() {
     this.logger = Logger.getInstance();
     this.logger.info('Initialize StressManager');
 
+    this.stressItemManager = new StressItemManager();
+
     if (environment === 'test') {
       this.logger.info('Starting fresh with stressManager');
-      this.state = null;
+      state.StressNS = null;
     }
 
-    if (!this.state) {
+    if (!state.StressNS) {
       this.initializeState();
     }
   }
@@ -40,9 +44,11 @@ export class StressStateManager {
       stresses: []
     };
 
-    this.state.characters.push(stressedCharacter);
+    state.StressNS.characters.push(stressedCharacter);
 
-    this.logger.info('Added new character ' + character.name + ' to StressState');
+    this.logger.info(
+      'Added new character ' + character.name + ' to StressState'
+    );
   }
 
   /**
@@ -68,18 +74,32 @@ export class StressStateManager {
         stressUpdate.name
     );
 
+    const oldStress =
+      Math.floor(state.StressNS.characters[index].stressValue / this.stressModifier);
+    state.StressNS.characters[index].stressValue += stressUpdate.amount;
+    const newStress =
+      Math.floor(state.StressNS.characters[index].stressValue / this.stressModifier);
+    const diff = newStress - oldStress;
 
-    this.state.characters[index].stressValue += stressUpdate.amount;
+    if (diff > 0) {
+      this.logger.info(
+        'Adding' + diff + ' stresses to character: ' + stressUpdate.name
+      );
+    }
+
+    const stressesToAdd = this.stressItemManager.getRandomStresses(diff);
+
+    stressesToAdd.forEach(stressToAdd => {
+      stressToAdd.doEffect(state.StressNS.characters[index])
+    })
   }
 
-  // Private
-  characterExists(character: PlayerCharacter): boolean {
+  private characterExists(character: PlayerCharacter): boolean {
     return this.findCharacterIndex(character) !== -1;
   }
 
-  // Private
   private findCharacterIndex(character: PlayerCharacter): number {
-    const index = this.state.characters.findIndex(_character => {
+    const index = state.StressNS.characters.findIndex(_character => {
       return (
         _character.id === character.id && _character.name === character.name
       );
@@ -88,10 +108,9 @@ export class StressStateManager {
     return index;
   }
 
-  // Private
   private initializeState() {
     this.logger.info('Creating new empty stress states');
-    this.state = {
+    state.StressNS = {
       version: 1.0,
       characters: []
     };
