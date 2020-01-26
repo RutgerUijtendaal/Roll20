@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+  },
+  "exclude": [
+    "test/**/*.ts",
+  ],
+  "include": [
+    "src/**/*.ts",
+  ]
+}

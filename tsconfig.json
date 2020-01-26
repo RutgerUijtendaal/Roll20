@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "allowJs": false,
+    "outDir": "js/",
     "module": "commonjs",
     "moduleResolution": "node",
-    "outDir": "js/",
     "noEmitOnError": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
@@ -12,16 +12,7 @@
     "noUnusedParameters": false,
     "removeComments": false,
     "sourceMap": false,
-    "strict": false,
     "target": "es6",
     "watch": false,
-  },
-  "exclude": [
-    "node_modules",
-    ".npm",
-  ],
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts"
-  ]
+  }
 }
