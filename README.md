@@ -6,7 +6,6 @@
 
 This repo consists of work done on modules to enhance the DnD campaign I'm currently a part of.
 
-
 ## Modules
 
 ### Stress
