@@ -33,4 +33,4 @@ While the Sandbox runs inside a Javascript Sandbox where everything is put into 
 In the current state in order to get the files onto Roll20s sandbox enviroment 2 steps are taken:
 
 * Webpack with [ts-loader](https://github.com/TypeStrong/ts-loader) is used to bundle all the seperate ts files into a single bundle.js file.
-* Lastly [heward](https://github.com/primarilysnark/heward) is used to deploy the bundle.js file to Roll20.
+* [heward](https://github.com/primarilysnark/heward) is used to deploy the bundle.js file to Roll20.
