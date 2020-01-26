@@ -1,17 +1,13 @@
 import { Logger } from '../shared/Logger';
 import { environment } from '../env';
-import { StressItemManager } from './StressItemManager';
 
 export class StressStateManager {
   readonly stressModifier = 5;
-  stressItemManager: StressItemManager;
   logger: Logger;
 
   constructor() {
     this.logger = Logger.getInstance();
     this.logger.info('Initialize StressManager');
-
-    this.stressItemManager = new StressItemManager();
 
     if (environment === 'test') {
       this.logger.info('Starting fresh with stressManager');
@@ -21,6 +17,10 @@ export class StressStateManager {
     if (!state.StressNS) {
       this.initializeState();
     }
+  }
+
+  getState(): StressState {
+    return state.StressNS;
   }
 
   /**
@@ -51,47 +51,25 @@ export class StressStateManager {
     );
   }
 
-  /**
-   * Add stress to a character. If character is not currently registered this request is
-   * discarded silently.
-   *
-   * @param stressUpdate obj containing who to update stress for and by what amount.
-   */
-  addStress(stressUpdate: StressUpdate) {
-    const index = this.findCharacterIndex(stressUpdate);
-
-    if (index === -1) {
+  updateStressedCharacter(stressedCharacter: StressedCharacter) {
+    if (!this.characterExists(stressedCharacter)) {
       this.logger.error(
-        'Tried to add stress for unknown character: ' + stressUpdate.name
+        'Attempted to update unknown character ' + stressedCharacter.name
       );
-      return;
+      return null;
     }
 
-    this.logger.debug(
-      'Increasing stress by ' +
-        stressUpdate.amount +
-        ' for character: ' +
-        stressUpdate.name
-    );
+    this.getState().characters[
+      this.findCharacterIndex(stressedCharacter)
+    ] = stressedCharacter;
+  }
 
-    const oldStress =
-      Math.floor(state.StressNS.characters[index].stressValue / this.stressModifier);
-    state.StressNS.characters[index].stressValue += stressUpdate.amount;
-    const newStress =
-      Math.floor(state.StressNS.characters[index].stressValue / this.stressModifier);
-    const diff = newStress - oldStress;
-
-    if (diff > 0) {
-      this.logger.info(
-        'Adding' + diff + ' stresses to character: ' + stressUpdate.name
-      );
+  getStressedCharacter(character: PlayerCharacter): StressedCharacter | null {
+    if (!this.characterExists(character)) {
+      return null;
     }
 
-    const stressesToAdd = this.stressItemManager.getRandomStresses(diff);
-
-    stressesToAdd.forEach(stressToAdd => {
-      stressToAdd.doEffect(state.StressNS.characters[index])
-    })
+    return state.StressNS.characters[this.findCharacterIndex(character)];
   }
 
   private characterExists(character: PlayerCharacter): boolean {

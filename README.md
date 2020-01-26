@@ -33,5 +33,5 @@ While the Sandbox runs inside a Javascript Sandbox where everything is put into 
 In the current state in order to get the files onto Roll20s sandbox enviroment 3 steps are taken:
 
 * First all files are transpiled into seperate js files using regular tsc command.
-* Next webpack is used to bundle all the seperate js files into a single bundle.ts file.
+* Next webpack is used to bundle all the seperate js files into a single bundle.js file.
 * Lastly [heward](https://github.com/primarilysnark/heward) is used to deploy the bundle.js file to Roll20.
