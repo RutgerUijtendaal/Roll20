@@ -2,7 +2,6 @@ import { Logger } from '../shared/Logger';
 import { environment } from '../env';
 
 export class StressStateManager {
-  readonly stressModifier = 5;
   logger: Logger;
 
   constructor() {

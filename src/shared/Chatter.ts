@@ -1,7 +1,8 @@
 import { botName } from "../env";
+import { Logger } from './Logger';
 
 export class Chatter {
-  name = botName;
+  name = botName || 'Nameless bot';
 
   attributeStressBase = 
     '&{template:default}' + 
@@ -12,6 +13,7 @@ export class Chatter {
     '{{Stress level= {4} }}'
 
   sendBotMessage(message: string) {
+    Logger.getInstance().debug(`Sending message ${message}`)
     sendChat(this.name, message, null, {noarchive:true});
   }
 

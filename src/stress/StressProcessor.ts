@@ -2,9 +2,10 @@ import { StressItemManager } from './StressItemManager';
 import { StressStateManager } from './StressStateManager';
 import { Logger } from '../shared/Logger';
 import { Chatter } from '../shared/Chatter';
+import { stressModifier } from '../env';
 
 export class StressProcessor {
-  readonly stressModifier = 5;
+  stressModifier = stressModifier || 5;
   logger: Logger;
   stressItemManager: StressItemManager;
   stressStateManager: StressStateManager;
