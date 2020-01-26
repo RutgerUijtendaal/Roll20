@@ -1,24 +1,15 @@
-import { Logger } from '../shared/Logger';
+import { updateNumericalPropertyWithValue } from '../shared/util';
 
-const stressStrenght: StressItem = {
-  name: '-2 Strenght',
-  doEffect: (stressedCharacter) => {
-    Logger.getInstance().info('-2 Strenght on: ' + stressedCharacter.name);
+const stressStrength: StressItem = {
+  id: 1,
+  name: '-2 strength',
+  targetAttribute: 'strength',
+  doEffect: stressedCharacter => {
+    updateNumericalPropertyWithValue('strength', stressedCharacter.name, -2);
   },
-  undoEffect: (stressedCharacter) => {
-    Logger.getInstance().info('+2 Strenght on: ' + stressedCharacter.name);
+  undoEffect: stressedCharacter => {
+    updateNumericalPropertyWithValue('strength', stressedCharacter.name, 2);
   }
 };
 
-const stressCharisma: StressItem = {
-  name: '-2 Charisma',
-  doEffect: (stressedCharacter) => {
-    Logger.getInstance().info('-2 Charisma on: ' + stressedCharacter.name);
-  },
-  undoEffect: (stressedCharacter) => {
-    Logger.getInstance().info('+2 Charisma on: ' + stressedCharacter.name);
-  }
-};
-
-export const stresses: StressItem[] = [stressStrenght, stressCharisma];
- 
+export const stresses: StressItem[] = [stressStrength];

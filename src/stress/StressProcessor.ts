@@ -1,20 +1,24 @@
 import { StressItemManager } from './StressItemManager';
 import { StressStateManager } from './StressStateManager';
 import { Logger } from '../shared/Logger';
+import { Chatter } from '../shared/Chatter';
 
 export class StressProcessor {
   readonly stressModifier = 5;
   logger: Logger;
   stressItemManager: StressItemManager;
   stressStateManager: StressStateManager;
+  chatter: Chatter;
 
   constructor(
     stressItemManager: StressItemManager,
-    stressStateManager: StressStateManager
+    stressStateManager: StressStateManager,
+    chatter: Chatter
   ) {
     this.logger = Logger.getInstance();
     this.stressItemManager = stressItemManager;
     this.stressStateManager = stressStateManager;
+    this.chatter = chatter;
   }
 
   // Used for testing;
@@ -29,14 +33,10 @@ export class StressProcessor {
    * @param stressUpdate obj containing who to update stress for and by what amount.
    */
   processStressAddition(stressUpdate: StressUpdate) {
-    let stressCharacter = this.stressStateManager.getStressedCharacter(
-      stressUpdate
-    );
+    let stressCharacter = this.stressStateManager.getStressedCharacter(stressUpdate);
 
     if (stressCharacter === null) {
-      this.logger.error(
-        'Tried to add stress for unknown character: ' + stressUpdate.name
-      );
+      this.logger.error(`Tried to add stress for unknown character: ${stressUpdate.name}`);
       return;
     }
 
@@ -54,63 +54,62 @@ export class StressProcessor {
    * @param stressUpdate obj containing who to update stress for and by what amount.
    */
   processStressRemoval(stressUpdate: StressUpdate) {
-    const stressCharacter = this.stressStateManager.getStressedCharacter(
-      stressUpdate
-    );
+    let stressCharacter = this.stressStateManager.getStressedCharacter(stressUpdate);
 
     if (stressCharacter === null) {
-      this.logger.error(
-        'Tried to add stress for unknown character: ' + stressUpdate.name
-      );
+      this.logger.error(`Tried to add stress for unknown character: ${stressUpdate.name}`);
       return;
     }
 
     const diff = this.getStressStepDifference(stressCharacter, stressUpdate);
 
-    this.updateStressAmount(stressCharacter, stressUpdate);
-    this.removeStresses(stressCharacter, diff);
+    stressCharacter = this.updateStressAmount(stressCharacter, stressUpdate);
+    stressCharacter = this.removeStresses(stressCharacter, diff);
 
     this.stressStateManager.updateStressedCharacter(stressCharacter);
   }
 
-  private removeStresses(
-    stressedCharacter: StressedCharacter,
-    count: number
-  ): StressedCharacter {
-    this.logger.debug(
-      'Removing ' + count + ' stresses from ' + stressedCharacter.name
-    );
-    
+  /**
+   * Remove {@link StressItem} from a character. Calls the undoEffect on each and removes them
+   * from the array of stresses.
+   *
+   * Removal is based on first in first out. If we somehow end up in a situation where more stresses
+   * have to be removed than exist in the array this function returns silently.
+   *
+   * @param stressedCharacter character to remove stresses from
+   * @param count amount of stresses to remove
+   */
+  private removeStresses(stressedCharacter: StressedCharacter, count: number): StressedCharacter {
+    this.logger.info(`Removing ${count} stresses from ${stressedCharacter.name}`);
+
     for (let index = 0; index < count; index++) {
-      if(stressedCharacter.stresses.length === 0) {
+      if (stressedCharacter.stresses.length === 0) {
         break;
       }
 
-      let stressedItem: StressItem = stressedCharacter.stresses.shift();
-      stressedItem.undoEffect(stressedCharacter);
+      let removedStress: StressItem = stressedCharacter.stresses.shift();
+      removedStress.undoEffect(stressedCharacter);
+      this.chatter.sendStressLostMessage(removedStress, stressedCharacter);
     }
 
     return stressedCharacter;
   }
+
   /**
-   * Add {@link StressItems} to a character. Calls the doEffect on each and adds them
+   * Add {@link StressItem} to a character. Calls the doEffect on each and adds them
    * to the array of stresses
    *
    * @param stressedCharacter character to add StressItems for
    * @param count amount of StressItems to add
    */
-  private addStresses(
-    stressedCharacter: StressedCharacter,
-    count: number
-  ): StressedCharacter {
-    this.logger.debug(
-      'Adding ' + count + ' stresses to ' + stressedCharacter.name
-    );
+  private addStresses(stressedCharacter: StressedCharacter, count: number): StressedCharacter {
+    this.logger.info(`Adding ${count} stresses from ${stressedCharacter.name}`);
     const stressesToAdd = this.stressItemManager.getRandomStresses(count);
 
     stressesToAdd.forEach(stressToAdd => {
       stressToAdd.doEffect(stressedCharacter);
       stressedCharacter.stresses.push(stressToAdd);
+      this.chatter.sendStressGainedMessage(stressToAdd, stressedCharacter);
     });
 
     return stressedCharacter;
@@ -126,8 +125,13 @@ export class StressProcessor {
     stressedCharacter: StressedCharacter,
     stressUpdate: StressUpdate
   ): StressedCharacter {
-    stressedCharacter.stressValue = Math.max(stressedCharacter.stressValue += stressUpdate.amount, 0);
-    this.logger.debug('Updated stress to new value: ' + stressedCharacter.stressValue + ' on character ' + stressedCharacter.name)
+    stressedCharacter.stressValue = Math.max(
+      (stressedCharacter.stressValue += stressUpdate.amount),
+      0
+    );
+    this.logger.debug(
+      `Updated stress to new value: ${stressedCharacter.stressValue} on character ${stressedCharacter.name}`
+    );
     return stressedCharacter;
   }
 
@@ -141,14 +145,12 @@ export class StressProcessor {
     stressedCharacter: StressedCharacter,
     stressUpdate: StressUpdate
   ) {
-    const oldStress = Math.floor(
-      stressedCharacter.stressValue / this.stressModifier
-    );
+    const oldStress = Math.floor(stressedCharacter.stressValue / this.stressModifier);
 
     const newStress = Math.floor(
-      Math.min(stressedCharacter.stressValue + stressUpdate.amount, 0) / this.stressModifier
+      Math.max(stressedCharacter.stressValue + stressUpdate.amount, 0) / this.stressModifier
     );
 
-    return newStress - oldStress;
+    return Math.abs(newStress - oldStress);
   }
 }

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "TS_NODE_FILES=true nyc mocha --require ts-node/register --config ./.mocharc.json",
     "deploy": "heward --script ./dist/bundle.js",
-    "tsd": "npm run test && tsc && webpack && npm run deploy"
+    "tsd": "npm run test && webpack && npm run deploy"
   },
   "repository": {
     "type": "git",
@@ -33,6 +33,7 @@
     "mocha-typescript": "^1.1.17",
     "nyc": "^15.0.0",
     "source-map-support": "^0.5.16",
+    "ts-loader": "^6.2.1",
     "ts-mockito": "^2.5.0",
     "ts-node": "^8.6.2",
     "typescript": "^3.7.5",

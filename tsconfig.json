@@ -20,4 +20,8 @@
     "node_modules",
     ".npm",
   ],
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ]
 }

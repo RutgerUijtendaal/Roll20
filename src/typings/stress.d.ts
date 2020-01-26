@@ -13,8 +13,10 @@ interface StressUpdate extends PlayerCharacter {
 }
 
 interface StressItem {
+  id: number;
   name: string;
   added?: number;
+  targetAttribute: string;
   doEffect: (stressedCharacter: StressedCharacter) => void;
   undoEffect: (stressedCharacter: StressedCharacter) => void;
 }

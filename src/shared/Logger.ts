@@ -18,13 +18,13 @@ export class Logger {
 
     debug(message: string) {
       if (this.logLevel === 'debug') {
-        log('DEBUG: ' + message);
+        log(`DEBUG: ${message}`);
       }
     }
 
     info(message: string) {
       if (this.logLevel === 'debug' || this.logLevel === 'info') {
-        log('INFO: ' + message);
+        log(`INFO: ${message}`);
       }
     }
 
@@ -34,7 +34,7 @@ export class Logger {
         this.logLevel === 'info' ||
         this.logLevel === 'error'
       ) {
-        log('ERROR: ' + message);
+        log(`ERROR: ${message}`);
       }
     }
   }

@@ -30,8 +30,7 @@ Each stress is associated with an addition and removal effect which get automati
 
 While the Sandbox runs inside a Javascript Sandbox where everything is put into single file scripts, this project uses Typescript to gain some of the benefits of typechecking and classes.
 
-In the current state in order to get the files onto Roll20s sandbox enviroment 3 steps are taken:
+In the current state in order to get the files onto Roll20s sandbox enviroment 2 steps are taken:
 
-* First all files are transpiled into seperate js files using regular tsc command.
-* Next webpack is used to bundle all the seperate js files into a single bundle.js file.
+* Webpack with [ts-loader](https://github.com/TypeStrong/ts-loader) is used to bundle all the seperate ts files into a single bundle.js file.
 * Lastly [heward](https://github.com/primarilysnark/heward) is used to deploy the bundle.js file to Roll20.

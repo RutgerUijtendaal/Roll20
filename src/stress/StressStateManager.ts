@@ -32,7 +32,7 @@ export class StressStateManager {
   addNewStressedCharacter(character: PlayerCharacter) {
     if (this.characterExists(character)) {
       this.logger.error(
-        'Tried adding existing character to StressState: ' + character.name
+        `Tried adding existing character to StressState: ${character.name}`
       );
       return;
     }
@@ -47,14 +47,14 @@ export class StressStateManager {
     state.StressNS.characters.push(stressedCharacter);
 
     this.logger.info(
-      'Added new character ' + character.name + ' to StressState'
+      `Added new character ${character.name} to StressState`
     );
   }
 
   updateStressedCharacter(stressedCharacter: StressedCharacter) {
     if (!this.characterExists(stressedCharacter)) {
       this.logger.error(
-        'Attempted to update unknown character ' + stressedCharacter.name
+        `Attempted to update unknown character: ${stressedCharacter.name}`
       );
       return null;
     }
