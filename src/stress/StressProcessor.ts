@@ -88,12 +88,9 @@ export class StressProcessor {
         break;
       }
 
-      let removedStress: StressItem | undefined = stressedCharacter.stresses.shift();
-      
-      if (removedStress) {
-        removedStress.undoEffect(stressedCharacter);
-        this.chatter.sendStressLostMessage(removedStress, stressedCharacter);
-      }
+      let removedStress: StressItem = stressedCharacter.stresses.shift();
+      removedStress.undoEffect(stressedCharacter);
+      this.chatter.sendStressLostMessage(removedStress, stressedCharacter);
     }
 
     return stressedCharacter;

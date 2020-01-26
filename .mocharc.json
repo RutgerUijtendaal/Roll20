@@ -8,5 +8,4 @@
   "timeout": 2000,
   "ui": "bdd",
   "spec": "test/**/*.spec.ts"
-  
 }

@@ -14,7 +14,7 @@ export class Chatter {
 
   sendBotMessage(message: string) {
     Logger.getInstance().debug(`Sending message ${message}`)
-    sendChat(this.name, message, () => {}, {noarchive:true});
+    sendChat(this.name, message, null, {noarchive:true});
   }
 
   sendStressGainedMessage(stress: StressItem, stressedCharacter: StressedCharacter) {

@@ -76,7 +76,7 @@ export class StressStateManager {
   }
 
   private findCharacterIndex(character: PlayerCharacter): number {
-    const index = state.StressNS.characters.findIndex((_character: StressedCharacter) => {
+    const index = state.StressNS.characters.findIndex(_character => {
       return (
         _character.id === character.id && _character.name === character.name
       );
