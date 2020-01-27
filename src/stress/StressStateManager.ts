@@ -55,7 +55,7 @@ export class StressStateManager {
       this.logger.error(
         `Attempted to update unknown character: ${stressedCharacter.name}`
       );
-      return null;
+      return;
     }
 
     this.getState().characters[

@@ -1,21 +1,38 @@
 import { Logger } from './Logger';
 
-export function findCharacterIdByName(name: string): Character {
+export function findCharacterByName(name: string): Character | undefined {
   const objs = findObjs({
     _type: 'character',
     name: name
   });
-  Logger.getInstance().debug(`found: ${objs.length} characters for name ${name}`);
+
+  if (objs.length > 1) {
+    Logger.getInstance().error(
+      `Found more than 1 result for ${name}, aborting to ensure nothing goes wrong`
+    );
+    return undefined;
+  }
+
   return objs.pop() as Character;
 }
 
-export function findAttributeByNameAndCharacterId(name: string, characterId: string): Attribute {
+export function findAttributeByNameAndCharacterId(
+  name: string,
+  characterId: string
+): Attribute | undefined {
   const objs = findObjs({
     _type: 'attribute',
     _characterid: characterId,
     name: name
   });
-  Logger.getInstance().debug(`found: ${objs.length} attribute for name ${name}`);
+
+  if (objs.length > 1) {
+    Logger.getInstance().error(
+      `Found more than 1 result for ${name}, aborting to ensure nothing goes wrong`
+    );
+    return undefined;
+  }
+
   return objs.pop() as Attribute;
 }
 
@@ -24,7 +41,7 @@ export function updateNumericalPropertyWithValue(
   characterName: string,
   value: number
 ) {
-  const character = findCharacterIdByName(characterName);
+  const character = findCharacterByName(characterName);
 
   if (!character) {
     Logger.getInstance().error(`Could not find character with name ${characterName}`);
@@ -43,7 +60,7 @@ export function updateNumericalPropertyWithValue(
   Logger.getInstance().info(
     `Modifying property ${propertyName} on character ${characterName} with value ${value}`
   );
-  
+
   const current = +property.get('current');
   property.setWithWorker('current', String(current + value));
 }

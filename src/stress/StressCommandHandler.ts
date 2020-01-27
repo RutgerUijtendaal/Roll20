@@ -1,19 +1,23 @@
 import { Logger } from '../shared/Logger';
 import { StressStateManager } from './StressStateManager';
 import { StressProcessor } from './StressProcessor';
+import { StressAbilityCreator } from './StressAbilityCreator';
 
 export class StressCommandHandler implements CommandHandler {
   stressStateManager: StressStateManager;
   stressProcessor: StressProcessor;
+  stressAbilityCreator: StressAbilityCreator;
   logger: Logger;
 
   public constructor(
     stressStateManager: StressStateManager,
-    stressProcessor: StressProcessor
+    stressProcessor: StressProcessor,
+    stressAbilityCreator: StressAbilityCreator
   ) {
     this.logger = Logger.getInstance();
     this.stressStateManager = stressStateManager;
     this.stressProcessor = stressProcessor;
+    this.stressAbilityCreator = stressAbilityCreator;
     this.register();
   }
 
@@ -50,10 +54,13 @@ export class StressCommandHandler implements CommandHandler {
    * If value given is not just numbers request is discarded
    */
   private handleNewStressCharacter(message: ChatEventData) {
-    this.stressStateManager.addNewStressedCharacter({
+    const playerCharacter: PlayerCharacter = {
       name: message.who,
       id: message.playerid
-    });
+    }
+
+    this.stressAbilityCreator.createStressAbilitiesOnCharacter(playerCharacter);
+    this.stressStateManager.addNewStressedCharacter(playerCharacter);
 
     return;
   }
