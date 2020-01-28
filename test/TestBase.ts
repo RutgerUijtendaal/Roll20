@@ -15,6 +15,7 @@ const stressedCharacterBase: StressedCharacter = {
 
 const stressItemBase: StressItem = {
   id: 1,
+  type: 'debuff',
   name: 'Stress Base',
   targetAttribute: 'attributeTarget',
   doEffect: stressedCharacter => {},
@@ -35,6 +36,5 @@ export class TestBase {
 
   public static stressItemBase(): StressItem {
     return ObjectHelper.deepCopy<StressItem>(stressItemBase);
-
   }
 }

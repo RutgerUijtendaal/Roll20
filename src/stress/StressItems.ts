@@ -2,6 +2,7 @@ import { updateNumericalPropertyWithValue } from '../shared/util';
 
 const stressStrength: StressItem = {
   id: 1,
+  type: 'debuff',
   name: '-2 Strength',
   targetAttribute: 'strength',
   doEffect: stressedCharacter => {
@@ -14,6 +15,7 @@ const stressStrength: StressItem = {
 
 const stressCharisma: StressItem = {
   id: 2,
+  type: 'debuff',
   name: '-2 Charisma',
   targetAttribute: 'charisma',
   doEffect: stressedCharacter => {
@@ -26,6 +28,7 @@ const stressCharisma: StressItem = {
 
 const stressIntelligence: StressItem = {
   id: 3,
+  type: 'debuff',
   name: '-2 Intelligence',
   targetAttribute: 'intelligence',
   doEffect: stressedCharacter => {
@@ -38,6 +41,7 @@ const stressIntelligence: StressItem = {
 
 const stressWisdom: StressItem = {
   id: 4,
+  type: 'debuff',
   name: '-2 Wisdom',
   targetAttribute: 'wisdom',
   doEffect: stressedCharacter => {
@@ -50,6 +54,7 @@ const stressWisdom: StressItem = {
 
 const stressDexterity: StressItem = {
   id: 5,
+  type: 'debuff',
   name: '-2 Dexterity',
   targetAttribute: 'dexterity',
   doEffect: stressedCharacter => {
@@ -59,6 +64,8 @@ const stressDexterity: StressItem = {
     updateNumericalPropertyWithValue('dexterity', stressedCharacter.name, 2);
   }
 };
+
+
 export const stresses: StressItem[] = [
   stressStrength,
   stressCharisma,

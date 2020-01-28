@@ -64,3 +64,14 @@ export function updateNumericalPropertyWithValue(
   const current = +property.get('current');
   property.setWithWorker('current', String(current + value));
 }
+
+export function getPlayerDisplayName(playerCharacter: PlayerCharacter): string {
+  const player: Player | undefined = getObj('player', playerCharacter.id);
+
+  if(!player){
+    Logger.getInstance().error(`Could not find player with ID ${playerCharacter.id}`);
+    return 'unknown sender';
+  }
+
+  return player.get('_displayname');
+}

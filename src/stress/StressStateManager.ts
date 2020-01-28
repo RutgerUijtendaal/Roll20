@@ -15,6 +15,8 @@ export class StressStateManager {
 
     if (!state.StressNS) {
       this.initializeState();
+    } else {
+      this.debugState();
     }
   }
 
@@ -83,6 +85,25 @@ export class StressStateManager {
     });
 
     return index;
+  }
+
+  private debugState() {
+    this.getState().characters.forEach((char: StressedCharacter) => {
+      this.logger.debug(
+        `char: ${char.name}
+         with stresses:`)
+
+      char.stresses.forEach((stress: StressItem) => {
+
+        this.logger.debug(
+          `${stress.name} and mixin: ${stress.mixin}`
+        )
+
+        if(stress.mixin !== undefined) {
+          this.logger.debug(`mixin name: ${stress.mixin.name} and function ${stress.mixin.undoEffect(char)}`)
+        }
+      })
+    })
   }
 
   private initializeState() {

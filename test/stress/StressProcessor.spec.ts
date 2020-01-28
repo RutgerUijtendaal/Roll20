@@ -133,7 +133,7 @@ class StressProcessorTest {
   }
 
   @test 
-  itShould_notGoBelowZero_whenRemovingStress_fromZeroAmount() {
+  itShould_exitEarly_whenLowering_andStressValueIsAlreadyZero() {
     // Arrange
     const stressUpdate = TestBase.stressUpdateBase();
     const stressedCharacter = TestBase.stressedCharacterBase();
@@ -157,6 +157,6 @@ class StressProcessorTest {
     this.stressProcessor.processStressRemoval(stressUpdate);
 
     // Assert
-    verify(this.mockStressStateManager.updateStressedCharacter(deepEqual(expected))).once();
+    verify(this.mockStressStateManager.updateStressedCharacter(deepEqual(expected))).never();
   }
 }

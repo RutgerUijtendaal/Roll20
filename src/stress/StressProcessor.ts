@@ -45,6 +45,7 @@ export class StressProcessor {
     stressCharacter = this.updateStressAmount(stressCharacter, stressUpdate);
     stressCharacter = this.addStresses(stressCharacter, diff);
 
+    this.chatter.sendStressGainedMessage(stressCharacter, stressUpdate.amount);
     this.stressStateManager.updateStressedCharacter(stressCharacter);
   }
 
@@ -62,11 +63,17 @@ export class StressProcessor {
       return;
     }
 
+    // If stress is already 0 we don't have to do anything
+    if (stressCharacter.stressValue === 0) {
+      return;
+    }
+
     const diff = this.getStressStepDifference(stressCharacter, stressUpdate);
 
     stressCharacter = this.updateStressAmount(stressCharacter, stressUpdate);
     stressCharacter = this.removeStresses(stressCharacter, diff);
 
+    this.chatter.sendStressLostMessage(stressCharacter, stressUpdate.amount);
     this.stressStateManager.updateStressedCharacter(stressCharacter);
   }
 
@@ -91,12 +98,44 @@ export class StressProcessor {
       let removedStress: StressItem | undefined = stressedCharacter.stresses.shift();
 
       if (removedStress) {
-        removedStress.undoEffect(stressedCharacter);
-        this.chatter.sendStressLostMessage(removedStress, stressedCharacter);
+        if(removedStress.mixin !== undefined) {
+          this.removeDoubleStress(stressedCharacter, removedStress)
+        } else {
+          this.removeStress(stressedCharacter, removedStress)
+        }
       }
     }
 
     return stressedCharacter;
+  }
+
+  /**
+   * Undo a {@link StressItem} containing a mixin from a character.
+   * 
+   * @param stressedCharacter StressedCharacter to remove the stressItem from.
+   * @param stress StressItem containgin mixin to remove. 
+   */
+  private removeDoubleStress(stressedCharacter: StressedCharacter, stress: StressItem) {
+    if(stress.mixin === undefined) {
+      this.logger.error(`Tried to double remove stress on a stress with no mixin`);
+      return;
+    }
+
+    stress.mixin.undoEffect(stressedCharacter);
+    stress.undoEffect(stressedCharacter);
+    this.chatter.sendDoubleStressDebuffLostMessage(stressedCharacter, stress);
+
+  }
+
+  /**
+   * Undo a {@link StressItem} from a character.
+   * 
+   * @param stressedCharacter StressedCharacter to remove the stressItem from.
+   * @param stress StressItem to remove.
+   */
+  private removeStress(stressedCharacter: StressedCharacter, stress: StressItem) {
+    stress.undoEffect(stressedCharacter);
+    this.chatter.sendStressDebuffLostMessage(stressedCharacter, stress);
   }
 
   /**
@@ -107,15 +146,53 @@ export class StressProcessor {
    * @param count amount of StressItems to add
    */
   private addStresses(stressedCharacter: StressedCharacter, count: number): StressedCharacter {
-    this.logger.info(`Adding ${count} stresses from ${stressedCharacter.name}`);
+    this.logger.info(`Adding ${count} stresses to ${stressedCharacter.name}`);
     const stressesToAdd = this.stressItemManager.getRandomStresses(count);
 
     stressesToAdd.forEach(stressToAdd => {
-      stressToAdd.doEffect(stressedCharacter);
-      stressedCharacter.stresses.push(stressToAdd);
-      this.chatter.sendStressGainedMessage(stressToAdd, stressedCharacter);
+      if (this.isStressItemAlreadyPresent(stressToAdd, stressedCharacter)) {
+        this.logger.info(`Stress ${stressToAdd.name} already present on ${stressedCharacter.name}`)
+        stressedCharacter = this.addDoubleStress(stressedCharacter);
+      } else {
+        stressedCharacter = this.addStress(stressedCharacter, stressToAdd);
+      }
     });
 
+    return stressedCharacter;
+  }
+
+  private addDoubleStress(stressedCharacter: StressedCharacter): StressedCharacter {
+    this.logger.info(`Adding double stresses to ${stressedCharacter.name}`);
+    const stressesToAdd = this.stressItemManager.getRandomStresses(2);
+
+    // Mixin the first stress with the current oldest stress that has no mixin yet
+    for (let index = 0; index < stressedCharacter.stresses.length; index++) {
+      if (stressedCharacter.stresses[index].mixin === undefined) {
+        stressedCharacter.stresses[index].mixin = (stressesToAdd[0] as StressItemBase);
+        stressedCharacter.stresses[index].mixin!!.doEffect(stressedCharacter);
+        this.chatter.sendDoubleStressDebuffGainedMessage(
+          stressedCharacter,
+          stressedCharacter.stresses[index]
+        );
+        break;
+      }
+      // This might happen in freak scenarios, we'll just ignore it silently it for now
+      this.logger.error(`All mixins occupied on character ${stressedCharacter.name}`);
+    }
+
+    // Then add the second one normally
+    stressedCharacter = this.addStress(stressedCharacter, stressesToAdd[1]);
+
+    return stressedCharacter;
+  }
+
+  private addStress(
+    stressedCharacter: StressedCharacter,
+    stressItem: StressItem
+  ): StressedCharacter {
+    stressItem.doEffect(stressedCharacter);
+    stressedCharacter.stresses.push(stressItem);
+    this.chatter.sendStressDebuffGainedMessage(stressedCharacter, stressItem);
     return stressedCharacter;
   }
 
@@ -156,5 +233,12 @@ export class StressProcessor {
     );
 
     return Math.abs(newStress - oldStress);
+  }
+
+  private isStressItemAlreadyPresent(
+    stressToAdd: StressItem,
+    stressedCharacter: StressedCharacter
+  ): boolean {
+    return stressedCharacter.stresses.find(stress => stress.id === stressToAdd.id) !== undefined;
   }
 }

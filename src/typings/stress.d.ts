@@ -1,3 +1,5 @@
+type StressType = 'debuff' | 'perseverence'
+
 interface PlayerCharacter {
   id: string;
   name: string;
@@ -12,13 +14,18 @@ interface StressUpdate extends PlayerCharacter {
   amount: number;
 }
 
-interface StressItem {
+interface StressItemBase {
   id: number;
+  type: StressType;
   name: string;
   added?: number;
   targetAttribute: string;
   doEffect: (stressedCharacter: StressedCharacter) => void;
   undoEffect: (stressedCharacter: StressedCharacter) => void;
+}
+
+interface StressItem extends StressItemBase {
+  mixin?: StressItem;
 }
 
 interface StressState {
