@@ -1,5 +1,3 @@
-import { updateNumericalPropertyWithValue } from '../shared/util';
-
 const stressStrength: StressItem = {
   id: 1,
   type: 'debuff',
