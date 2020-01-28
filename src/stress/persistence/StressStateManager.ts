@@ -4,15 +4,13 @@ import { StressAbilityCreator } from '../util/StressAbilityCreator';
 
 export class StressStateManager {
   stressAbilityCreator: StressAbilityCreator;
-  logger: Logger;
 
   constructor(stressAbilityCreator: StressAbilityCreator) {
     this.stressAbilityCreator = stressAbilityCreator;
-    this.logger = Logger.getInstance();
-    this.logger.info('Initialize StressManager');
+    Logger.info('Initialize StressManager');
 
     if (environment === 'test') {
-      this.logger.info('Starting fresh with stressManager');
+      Logger.info('Starting fresh with stressManager');
       state.StressNS = null;
     }
 
@@ -35,7 +33,7 @@ export class StressStateManager {
    */
   addNewStressedCharacter(playerCharacter: PlayerCharacter) {
     if (this.characterExists(playerCharacter)) {
-      this.logger.error(
+      Logger.error(
         `Tried adding existing character to StressState: ${playerCharacter.name}`
       );
       return;
@@ -49,7 +47,7 @@ export class StressStateManager {
 
     state.StressNS.characters.push(stressedCharacter);
 
-    this.logger.info(
+    Logger.info(
       `Added new character ${playerCharacter.name} to StressState`
     );
 
@@ -66,7 +64,7 @@ export class StressStateManager {
    */
   updateStressedCharacter(stressedCharacter: StressedCharacter) {
     if (!this.characterExists(stressedCharacter)) {
-      this.logger.error(
+      Logger.error(
         `Attempted to update unknown character: ${stressedCharacter.name}`
       );
       return;
@@ -109,23 +107,23 @@ export class StressStateManager {
 
   private debugState() {
     this.getState().characters.forEach((char: StressedCharacter) => {
-      this.logger.debug(
+      Logger.debug(
         `char: ${char.name} with stresses:`)
 
       char.stresses.forEach((stress: StressItem) => {
-        this.logger.debug(
+        Logger.debug(
           `${stress.name}`
         )
 
         if(stress.mixin !== undefined) {
-          this.logger.debug(`And mixin: ${stress.mixin.name}`)
+          Logger.debug(`And mixin: ${stress.mixin.name}`)
         }
       })
     })
   }
 
   private initializeState() {
-    this.logger.info('Creating new empty stress states');
+    Logger.info('Creating new empty stress states');
     state.StressNS = {
       version: 1.0,
       characters: []

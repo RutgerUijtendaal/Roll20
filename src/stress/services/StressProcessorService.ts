@@ -1,34 +1,27 @@
 import { StressStateManager } from '../persistence/StressStateManager';
 import { Logger } from '../../shared/Logger';
-import { Chatter } from '../../shared/Chatter';
+import { StressChatter } from '../util/StressChatter';
 import { stressModifier } from '../../env';
 import { StressAdditionService } from './StressAdditionService';
 import { StressRemovalService } from './StressRemovalService';
 
 export class StressProcessorService {
   stressModifier = stressModifier || 5;
-  logger: Logger;
   stressStateManager: StressStateManager;
   stressAdditionService: StressAdditionService;
   stressRemovalService: StressRemovalService;
-  chatter: Chatter;
+  chatter: StressChatter;
 
   constructor(
     stressStateManager: StressStateManager,
     stressAdditionService: StressAdditionService,
     stressRemovalService: StressRemovalService,
-    chatter: Chatter
+    chatter: StressChatter
   ) {
-    this.logger = Logger.getInstance();
     this.stressStateManager = stressStateManager;
     this.stressAdditionService = stressAdditionService;
     this.stressRemovalService = stressRemovalService;
     this.chatter = chatter;
-  }
-
-  // Used for testing;
-  setLogger(logger: Logger) {
-    this.logger = logger;
   }
 
   /**
@@ -41,7 +34,7 @@ export class StressProcessorService {
     let stressCharacter = this.stressStateManager.getStressedCharacter(stressUpdate);
 
     if (stressCharacter === undefined) {
-      this.logger.error(`Tried to add stress for unknown character: ${stressUpdate.name}`);
+      Logger.error(`Tried to add stress for unknown character: ${stressUpdate.name}`);
       return;
     }
 
@@ -63,7 +56,7 @@ export class StressProcessorService {
     let stressCharacter = this.stressStateManager.getStressedCharacter(stressUpdate);
 
     if (stressCharacter === undefined) {
-      this.logger.error(`Tried to add stress for unknown character: ${stressUpdate.name}`);
+      Logger.error(`Tried to add stress for unknown character: ${stressUpdate.name}`);
       return;
     }
 
@@ -89,7 +82,7 @@ export class StressProcessorService {
       (stressedCharacter.stressValue += stressUpdate.amount),
       0
     );
-    this.logger.debug(
+    Logger.debug(
       `Updated stress to new value: ${stressedCharacter.stressValue} on character ${stressedCharacter.name}`
     );
     return stressedCharacter;

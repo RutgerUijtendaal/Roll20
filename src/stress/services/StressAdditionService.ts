@@ -1,21 +1,19 @@
-import { Chatter } from '../../shared/Chatter';
 import { Logger } from '../../shared/Logger';
 import { StressItemManager } from '../items/StressItemManager';
-import { updateNumericalPropertyWithValue } from '../../shared/util';
+import { Roll20Util } from '../../shared/Roll20Util';
+import { StressChatter } from '../util/StressChatter';
 
 export class StressAdditionService {
   stressItemManager: StressItemManager;
-  chatter: Chatter;
-  logger: Logger;
+  chatter: StressChatter;
 
   constructor(
     stressItemManager: StressItemManager,
-    chatter: Chatter
+    chatter: StressChatter
   ) {
-    this.logger = Logger.getInstance();
     this.stressItemManager = stressItemManager;
     this.chatter = chatter;
-  }
+  } 
 
   /**
    * Add {@link StressItem} to a character. Calls the doEffect on each and adds them
@@ -25,12 +23,12 @@ export class StressAdditionService {
    * @param count amount of StressItems to add
    */
   addStresses(stressedCharacter: StressedCharacter, count: number): StressedCharacter {
-    this.logger.info(`Adding ${count} stresses to ${stressedCharacter.name}`);
+    Logger.info(`Adding ${count} stresses to ${stressedCharacter.name}`);
     const stressesToAdd = this.stressItemManager.getRandomStresses(count);
 
     stressesToAdd.forEach(stressToAdd => {
       if (this.isStressItemAlreadyPresent(stressToAdd, stressedCharacter)) {
-        this.logger.debug(`Stress ${stressToAdd.name} already present on ${stressedCharacter.name}`)
+        Logger.debug(`Stress ${stressToAdd.name} already present on ${stressedCharacter.name}`)
         stressedCharacter = this.addDoubleStress(stressedCharacter);
       } else {
         stressedCharacter = this.addStress(stressedCharacter, stressToAdd);
@@ -41,7 +39,7 @@ export class StressAdditionService {
   }
 
   private addDoubleStress(stressedCharacter: StressedCharacter): StressedCharacter {
-    this.logger.info(`Adding double stresses to ${stressedCharacter.name}`);
+    Logger.info(`Adding double stresses to ${stressedCharacter.name}`);
     const stressesToAdd = this.stressItemManager.getRandomStresses(2);
 
     // Add the normal stress first so there's always an empty mixin
@@ -50,7 +48,7 @@ export class StressAdditionService {
     // Mixin the first stress with the current oldest stress that has no mixin yet
     for (let index = 0; index < stressedCharacter.stresses.length; index++) {
       if (stressedCharacter.stresses[index].mixin === undefined) {
-        this.logger.debug(`Added mixin on index ${index}`)
+        Logger.debug(`Added mixin on index ${index}`)
         stressedCharacter.stresses[index].mixin = (stressesToAdd[0] as StressItemBase);
         this.doStress(stressedCharacter, stressedCharacter.stresses[index].mixin!!)
         this.chatter.sendDoubleStressDebuffGainedMessage(
@@ -82,6 +80,6 @@ export class StressAdditionService {
   }
 
   private doStress(stressedCharacter: StressedCharacter, stress: StressItemBase) {
-    updateNumericalPropertyWithValue(stressedCharacter, stress);
+    Roll20Util.updateNumericalPropertyWithValue(stressedCharacter, stress);
   }
 }

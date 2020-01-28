@@ -7,7 +7,7 @@ export class StressAbilityCreator {
    * @param playerCharacter playerCharacter to create the buttons for
    */
   createStressAbilityOnCharacter(playerCharacter: PlayerCharacter) {
-    Logger.getInstance().info(`Creating Stress ability on ${playerCharacter.name}`);
+    Logger.info(`Creating Stress ability on ${playerCharacter.name}`);
     const abilityProperties: AbilityCreationProperties = {
       _characterid: playerCharacter.characterId,
       name: 'Stress',

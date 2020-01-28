@@ -1,21 +1,19 @@
-import { Logger } from '../../shared/Logger';
 import { StressStateManager } from '../persistence/StressStateManager';
 import { StressProcessorService } from '../services/StressProcessorService';
-import { getCharacterFromTokenId, getPlayerDisplayNameById } from '../../shared/util';
-import { Chatter } from '../../shared/Chatter';
+import { Roll20Util } from '../../shared/Roll20Util';
+import { StressChatter } from '../util/StressChatter';
+import { Logger } from '../../shared/Logger';
 
 export class StressCommandHandler {
   stressStateManager: StressStateManager;
   stressProcessor: StressProcessorService;
-  chatter: Chatter;
-  logger: Logger;
+  chatter: StressChatter;
 
   public constructor(
     stressStateManager: StressStateManager,
     stressProcessor: StressProcessorService,
-    chatter: Chatter
+    chatter: StressChatter
   ) {
-    this.logger = Logger.getInstance();
     this.stressStateManager = stressStateManager;
     this.stressProcessor = stressProcessor;
     this.chatter = chatter;
@@ -23,7 +21,7 @@ export class StressCommandHandler {
   }
 
   register() {
-    this.logger.info('Registering Stress Command Handler');
+    Logger.info('Registering Stress Command Handler');
 
     on('chat:message', (message: ChatEventData) => {
       this.handle(message);
@@ -39,7 +37,7 @@ export class StressCommandHandler {
 
     if(playerCharacter === undefined) {
       this.chatter.sendErrorFeedback((message.playerid), 'Make sure to only select 1 token. And that token is associated with a character');
-      this.logger.error(`No character found for message`)
+      Logger.error(`No character found for message`)
       return;
     }
 
@@ -98,7 +96,7 @@ export class StressCommandHandler {
       return +amount;
     }
 
-    this.logger.error('Stress update command contained more than just numbers');
+    Logger.error('Stress update command contained more than just numbers');
     return undefined;
   }
 
@@ -106,7 +104,7 @@ export class StressCommandHandler {
     const apiChatEvent = (message as ApiChatEventData);
 
     if(apiChatEvent.selected !== undefined && apiChatEvent.selected.length === 1) {
-      const character = getCharacterFromTokenId(apiChatEvent.selected[0]._id);
+      const character = Roll20Util.getCharacterFromTokenId(apiChatEvent.selected[0]._id);
 
       if(character !== undefined) {
         const playerCharacter: PlayerCharacter = {
@@ -115,11 +113,10 @@ export class StressCommandHandler {
           name: character.get('name')
         }
 
-        this.logger.debug(`name: ${playerCharacter.name}, id: ${playerCharacter.characterId}`)
+        Logger.debug(`name: ${playerCharacter.name}, id: ${playerCharacter.characterId}`)
         return playerCharacter;
       }
     } 
-
     return;
   }
 }

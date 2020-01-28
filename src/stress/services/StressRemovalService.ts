@@ -1,18 +1,16 @@
-import { Chatter } from '../../shared/Chatter';
 import { Logger } from '../../shared/Logger';
 import { StressItemManager } from '../items/StressItemManager';
-import { updateNumericalPropertyWithValue } from '../../shared/util';
+import { Roll20Util } from '../../shared/Roll20Util';
+import { StressChatter } from '../util/StressChatter';
 
 export class StressRemovalService {
   stressItemManager: StressItemManager;
-  chatter: Chatter;
-  logger: Logger;
+  chatter: StressChatter;
 
   constructor(
     stressItemManager: StressItemManager,
-    chatter: Chatter
+    chatter: StressChatter
   ) {
-    this.logger = Logger.getInstance();
     this.stressItemManager = stressItemManager;
     this.chatter = chatter;
   } 
@@ -28,7 +26,7 @@ export class StressRemovalService {
    * @param count amount of stresses to remove
    */
   removeStresses(stressedCharacter: StressedCharacter, count: number): StressedCharacter {
-    this.logger.info(`Removing ${count} stresses from ${stressedCharacter.name}`);
+    Logger.info(`Removing ${count} stresses from ${stressedCharacter.name}`);
 
     for (let index = 0; index < count; index++) {
       if (stressedCharacter.stresses.length === 0) {
@@ -51,7 +49,7 @@ export class StressRemovalService {
 
   private removeDoubleStress(stressedCharacter: StressedCharacter, stress: StressItem) {
     if(stress.mixin === undefined) {
-      this.logger.error(`Tried to double remove stress on a stress with no mixin`);
+      Logger.error(`Tried to double remove stress on a stress with no mixin`);
       return;
     }
 
@@ -68,6 +66,6 @@ export class StressRemovalService {
 
   private undoStress(stressedCharacter: StressedCharacter, stress: StressItemBase) {
     stress.attributeModifier = stress.attributeModifier * -1
-    updateNumericalPropertyWithValue(stressedCharacter, stress);
+    Roll20Util.updateNumericalPropertyWithValue(stressedCharacter, stress);
   }
 }

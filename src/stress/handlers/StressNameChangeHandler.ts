@@ -3,16 +3,14 @@ import { StressStateManager } from '../persistence/StressStateManager';
 
 export class StressNameChangeHandler {
   stressStateManager: StressStateManager;
-  logger: Logger;
 
   constructor(stressStateManager: StressStateManager) {
-    this.logger = Logger.getInstance();
     this.stressStateManager = stressStateManager;
     this.register();
   }
 
   register() {
-    this.logger.info('Registering Stress Name Change Handler');
+    Logger.info('Registering Stress Name Change Handler');
 
     on('change:character', (cur, prev) => {
       if (cur.get('name') !== prev.name) {
@@ -33,7 +31,7 @@ export class StressNameChangeHandler {
     }
 
     stressedCharacter.name = cur.get('name');
-    this.logger.info(`Changed name ${prev.name} to ${stressedCharacter.name}`)
+    Logger.info(`Changed name ${prev.name} to ${stressedCharacter.name}`)
     this.stressStateManager.updateStressedCharacter(stressedCharacter);
   }
 }
