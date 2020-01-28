@@ -8,7 +8,7 @@ import { StressAbilityCreator } from './stress/StressAbilityCreator';
 const chatter = new Chatter();
 const stressAbilityCreator = new StressAbilityCreator();
 const stressItemManager = new StressItemManager();
-const stressStateManager = new StressStateManager();
+const stressStateManager = new StressStateManager(stressAbilityCreator);
 const stressProcessor = new StressProcessor(stressItemManager, stressStateManager, chatter);
 
-new StressCommandHandler(stressStateManager, stressProcessor, stressAbilityCreator);
+new StressCommandHandler(stressStateManager, stressProcessor);

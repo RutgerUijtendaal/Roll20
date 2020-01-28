@@ -166,9 +166,13 @@ export class StressProcessor {
     this.logger.info(`Adding double stresses to ${stressedCharacter.name}`);
     const stressesToAdd = this.stressItemManager.getRandomStresses(2);
 
+    // Add the normal stress first so there's always an empty mixin
+    stressedCharacter = this.addStress(stressedCharacter, stressesToAdd[1]);
+
     // Mixin the first stress with the current oldest stress that has no mixin yet
     for (let index = 0; index < stressedCharacter.stresses.length; index++) {
       if (stressedCharacter.stresses[index].mixin === undefined) {
+        this.logger.info(`Added mixin on index ${index}`)
         stressedCharacter.stresses[index].mixin = (stressesToAdd[0] as StressItemBase);
         this.doStress(stressedCharacter, stressedCharacter.stresses[index].mixin!!)
         this.chatter.sendDoubleStressDebuffGainedMessage(
@@ -178,11 +182,10 @@ export class StressProcessor {
         break;
       }
       // This might happen in freak scenarios, we'll just ignore it silently it for now
-      this.logger.error(`All mixins occupied on character ${stressedCharacter.name}`);
+      if(index === stressedCharacter.stresses.length - 1) {
+        this.logger.error(`All mixins occupied on character ${stressedCharacter.name}`);
+      }
     }
-
-    // Then add the second one normally
-    stressedCharacter = this.addStress(stressedCharacter, stressesToAdd[1]);
 
     return stressedCharacter;
   }

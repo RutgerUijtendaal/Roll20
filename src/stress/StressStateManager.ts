@@ -1,10 +1,13 @@
 import { Logger } from '../shared/Logger';
 import { environment } from '../env';
+import { StressAbilityCreator } from './StressAbilityCreator';
 
 export class StressStateManager {
+  stressAbilityCreator: StressAbilityCreator;
   logger: Logger;
 
-  constructor() {
+  constructor(stressAbilityCreator: StressAbilityCreator) {
+    this.stressAbilityCreator = stressAbilityCreator;
     this.logger = Logger.getInstance();
     this.logger.info('Initialize StressManager');
 
@@ -15,7 +18,7 @@ export class StressStateManager {
 
     if (!state.StressNS) {
       this.initializeState();
-    } else {
+    } else if(environment === 'test') {
       this.debugState();
     }
   }
@@ -50,6 +53,8 @@ export class StressStateManager {
     this.logger.info(
       `Added new character ${character.name} to StressState`
     );
+
+    this.stressAbilityCreator.createStressAbilitiesOnCharacter(character);
   }
 
   updateStressedCharacter(stressedCharacter: StressedCharacter) {

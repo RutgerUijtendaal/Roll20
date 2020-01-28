@@ -75,3 +75,13 @@ export function getPlayerDisplayName(playerCharacter: PlayerCharacter): string {
 
   return player.get('_displayname');
 }
+
+export function getTokenNameFromId(id: string): string | undefined {
+  const graphicObj = getObj('graphic', id);
+  
+  if(graphicObj && graphicObj.get('_subtype') === 'token') {
+    return graphicObj.get('name')
+  }
+
+  return;
+}

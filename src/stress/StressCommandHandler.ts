@@ -1,23 +1,20 @@
 import { Logger } from '../shared/Logger';
 import { StressStateManager } from './StressStateManager';
 import { StressProcessor } from './StressProcessor';
-import { StressAbilityCreator } from './StressAbilityCreator';
+import { getTokenNameFromId } from '../shared/util';
 
 export class StressCommandHandler implements CommandHandler {
   stressStateManager: StressStateManager;
   stressProcessor: StressProcessor;
-  stressAbilityCreator: StressAbilityCreator;
   logger: Logger;
 
   public constructor(
     stressStateManager: StressStateManager,
     stressProcessor: StressProcessor,
-    stressAbilityCreator: StressAbilityCreator
   ) {
     this.logger = Logger.getInstance();
     this.stressStateManager = stressStateManager;
     this.stressProcessor = stressProcessor;
-    this.stressAbilityCreator = stressAbilityCreator;
     this.register();
   }
 
@@ -34,18 +31,23 @@ export class StressCommandHandler implements CommandHandler {
       return;
     }
 
-    // TODO Check if character is player character ?
+    const name = this.extractTokenNameFromMessage(message);
+
+    if(name === undefined) {
+      this.logger.error(`Undefined name found for message`)
+      return;
+    }
 
     if (message.content.indexOf('!stress') !== -1) {
-      this.handleNewStressCharacter(message);
+      this.handleNewStressCharacter(message, name);
     }
 
     if (message.content.indexOf('!+stress') !== -1) {
-      this.handleAddStress(message);
+      this.handleAddStress(message, name);
     }
 
     if (message.content.indexOf('!-stress') !== -1) {
-      this.handleRemoveStress(message);
+      this.handleRemoveStress(message, name);
     }
   }
 
@@ -53,13 +55,12 @@ export class StressCommandHandler implements CommandHandler {
    * Add stress to a character. Character is based on who
    * If value given is not just numbers request is discarded
    */
-  private handleNewStressCharacter(message: ChatEventData) {
+  private handleNewStressCharacter(message: ChatEventData, name: string) {
     const playerCharacter: PlayerCharacter = {
-      name: message.who,
+      name: name,
       id: message.playerid
     }
 
-    this.stressAbilityCreator.createStressAbilitiesOnCharacter(playerCharacter);
     this.stressStateManager.addNewStressedCharacter(playerCharacter);
 
     return;
@@ -69,7 +70,7 @@ export class StressCommandHandler implements CommandHandler {
    * Add stress to a character. Character is based on who
    * If value given is not just numbers request is discarded
    */
-  private handleAddStress(message: ChatEventData) {
+  private handleAddStress(message: ChatEventData, name: string) {
     const amountToAdd = this.extractStressAmount(message.content);
 
     if (!amountToAdd) {
@@ -77,7 +78,7 @@ export class StressCommandHandler implements CommandHandler {
     }
 
     this.stressProcessor.processStressAddition({
-      name: message.who,
+      name: name,
       id: message.playerid,
       amount: amountToAdd
     });
@@ -89,7 +90,7 @@ export class StressCommandHandler implements CommandHandler {
    * Remove stress from a character.
    * If value given is not just numbers request is discarded
    */
-  private handleRemoveStress(message: ChatEventData) {
+  private handleRemoveStress(message: ChatEventData, name: string) {
     const amountToAdd = this.extractStressAmount(message.content);
 
     if (!amountToAdd) {
@@ -97,7 +98,7 @@ export class StressCommandHandler implements CommandHandler {
     }
 
     this.stressProcessor.processStressRemoval({
-      name: message.who,
+      name: name,
       id: message.playerid,
       amount: amountToAdd * -1
     });
@@ -115,5 +116,15 @@ export class StressCommandHandler implements CommandHandler {
     // add way to inform player that his/her command sucks.
     this.logger.error('Stress update command contained more than just numbers');
     return null;
+  }
+
+  private extractTokenNameFromMessage(message: ChatEventData): string | undefined {
+    const apiChatEvent = (message as ApiChatEventData);
+
+    if(apiChatEvent.selected !== undefined && apiChatEvent.selected.length === 1) {
+      return getTokenNameFromId(apiChatEvent.selected[0]._id);
+    } else {
+      return;
+    }
   }
 }

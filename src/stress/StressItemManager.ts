@@ -1,4 +1,5 @@
 import { stresses } from "./StressItems";
+import { ObjectHelper } from '../../test/ObjectHelper';
 
 export class StressItemManager {
   stressItems: StressItem[]
@@ -20,7 +21,7 @@ export class StressItemManager {
   }
 
   private getRandomStress(): StressItem {
-    return this.stressItems[this.getRandomNumberForSize()]
+    return ObjectHelper.deepCopy<StressItem>(this.stressItems[this.getRandomNumberForSize()])
   }
 
   private getRandomNumberForSize() {

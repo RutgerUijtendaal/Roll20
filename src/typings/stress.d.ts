@@ -24,7 +24,7 @@ interface StressItemBase {
 }
 
 interface StressItem extends StressItemBase {
-  mixin?: StressItem;
+  mixin?: StressItemBase;
 }
 
 interface StressState {
