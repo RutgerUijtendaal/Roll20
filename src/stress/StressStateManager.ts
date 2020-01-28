@@ -57,6 +57,14 @@ export class StressStateManager {
     this.stressAbilityCreator.createStressAbilitiesOnCharacter(character);
   }
 
+  /**
+   * Updates an existing {@link StressedCharacter} with new values. Overwrites the whole
+   * object. Updating is based on character name.
+   * 
+   * If the character can't be found this function exits silently.
+   * 
+   * @param stressedCharacter StressedCharacter to update. 
+   */
   updateStressedCharacter(stressedCharacter: StressedCharacter) {
     if (!this.characterExists(stressedCharacter)) {
       this.logger.error(
@@ -71,6 +79,10 @@ export class StressStateManager {
   }
 
   /**
+   * Get a {@link StressedCharacter} from the persisted state based on a {@link PlayerCharacter}.
+   * Finding a character is based on name.
+   * 
+   * If no character can be found returns undefined instead.
    * 
    * @param character 
    */

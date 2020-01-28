@@ -1,4 +1,4 @@
-import { ObjectHelper } from '../src/shared/ObjectHelper';
+import { ObjectHelper } from '../../src/shared/ObjectHelper';
 
 const stressUpdateBase: StressUpdate = {
   id: 'uuid-string',

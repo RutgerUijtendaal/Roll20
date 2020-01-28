@@ -4,7 +4,7 @@
   "description": "DnD scripts",
   "main": "index.ts",
   "scripts": {
-    "test": "TS_NODE_FILES=true nyc mocha --require ts-node/register --config ./.mocharc.json",
+    "test": "TS_NODE_FILES=true nyc mocha --require ts-node/register --config ./test/.mocharc.json",
     "deploy": "heward --script ./dist/bundle.js",
     "tsd": "npm run test && webpack && npm run deploy"
   },
