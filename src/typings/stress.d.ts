@@ -1,7 +1,8 @@
 type StressType = 'debuff' | 'perseverence'
 
 interface PlayerCharacter {
-  id: string;
+  characterId: string;
+  playerId: string;
   name: string;
 }
 

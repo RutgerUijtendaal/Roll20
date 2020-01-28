@@ -1,13 +1,15 @@
 import { ObjectHelper } from '../../src/shared/ObjectHelper';
 
 const stressUpdateBase: StressUpdate = {
-  id: 'uuid-string',
+  characterId: 'uuid-charcter',
+  playerId: 'uuid-player',
   name: 'Bolvar',
   amount: 0
 };
 
 const stressedCharacterBase: StressedCharacter = {
-  id: 'uuid-string',
+  characterId: 'uuid-charcter',
+  playerId: 'uuid-player',
   name: 'Bolvar',
   stressValue: 0,
   stresses: []

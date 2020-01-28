@@ -23,12 +23,12 @@ export class Chatter {
     '{{New value= @{{0}|{5}} {5} }}' +
     '{{Stress level= {6} }}'
 
-  sendStressGainedWhisper(stressedCharacter: StressedCharacter, amount: number) {
-    this.sendBotWhisper(getPlayerDisplayName(stressedCharacter), `Gained ${amount} stress`)
+  sendStressGainedWhisper(stressUpdate: StressUpdate) {
+    this.sendBotWhisper(getPlayerDisplayName(stressUpdate), `Gained ${stressUpdate.amount} stress`)
   }
 
-  sendStressLostWhisper(stressedCharacter: StressedCharacter, amount: number) {
-    this.sendBotWhisper(getPlayerDisplayName(stressedCharacter), `Lost ${amount} stress`)
+  sendStressLostWhisper(stressUpdate: StressUpdate) {
+    this.sendBotWhisper(getPlayerDisplayName(stressUpdate), `Lost ${stressUpdate.amount} stress`)
   }
 
   sendDoubleStressDebuffGainedMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
@@ -88,7 +88,7 @@ export class Chatter {
   private sendBotWhisper(to: string, content: string) {
     const message = `/w "${to}" ${content}`
     Logger.getInstance().debug(`Sending message ${message}`)
-    sendChat("", message, null, {noarchive:true})
+    sendChat(this.name, message, null, {noarchive:true})
   }
 
   private sendBotAnnouncement(message: string) {

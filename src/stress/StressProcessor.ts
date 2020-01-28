@@ -49,7 +49,7 @@ export class StressProcessor {
     stressCharacter = this.updateStressAmount(stressCharacter, stressUpdate);
     stressCharacter = this.stressAdditionService.addStresses(stressCharacter, diff);
 
-    this.chatter.sendStressGainedWhisper(stressCharacter, stressUpdate.amount);
+    this.chatter.sendStressGainedWhisper(stressUpdate);
     this.stressStateManager.updateStressedCharacter(stressCharacter);
   }
 
@@ -77,7 +77,7 @@ export class StressProcessor {
     stressCharacter = this.updateStressAmount(stressCharacter, stressUpdate);
     stressCharacter = this.stressRemovalService.removeStresses(stressCharacter, diff);
 
-    this.chatter.sendStressLostWhisper(stressCharacter, stressUpdate.amount);
+    this.chatter.sendStressLostWhisper(stressUpdate);
     this.stressStateManager.updateStressedCharacter(stressCharacter);
   }
 

@@ -1,21 +1,5 @@
 import { Logger } from './Logger';
 
-export function findCharacterByName(name: string): Character | undefined {
-  const objs = findObjs({
-    _type: 'character',
-    name: name
-  });
-
-  if (objs.length > 1) {
-    Logger.getInstance().error(
-      `Found more than 1 result for ${name}, aborting to ensure nothing goes wrong`
-    );
-    return undefined;
-  }
-
-  return objs.pop() as Character;
-}
-
 export function findAttributeByNameAndCharacterId(
   name: string,
   characterId: string
@@ -37,51 +21,62 @@ export function findAttributeByNameAndCharacterId(
 }
 
 export function updateNumericalPropertyWithValue(
-  propertyName: string,
-  characterName: string,
-  value: number
+  stressedCharacter: StressedCharacter,
+  stress: StressItem
 ) {
-  const character = findCharacterByName(characterName);
-
-  if (!character) {
-    Logger.getInstance().error(`Could not find character with name ${characterName}`);
-    return;
-  }
-
-  const property = findAttributeByNameAndCharacterId(propertyName, character.id);
+  const property = findAttributeByNameAndCharacterId(
+    stress.targetAttribute,
+    stressedCharacter.characterId
+  );
 
   if (!property) {
     Logger.getInstance().error(
-      `Could not find property with name ${propertyName} on character ${characterName}`
+      `Could not find property with name ${stress.targetAttribute} on character ${stressedCharacter.name}`
     );
     return;
   }
 
   Logger.getInstance().info(
-    `Modifying property ${propertyName} on character ${characterName} with value ${value}`
+    `Modifying property ${stress.targetAttribute} on character ${stressedCharacter.characterId} with value ${stress.attributeModifier}`
   );
 
   const current = +property.get('current');
-  property.setWithWorker('current', String(current + value));
+  property.setWithWorker('current', String(current + stress.attributeModifier));
 }
 
 export function getPlayerDisplayName(playerCharacter: PlayerCharacter): string {
-  const player: Player | undefined = getObj('player', playerCharacter.id);
+  const player: Player | undefined = getObj('player', playerCharacter.playerId);
 
-  if(!player){
-    Logger.getInstance().error(`Could not find player with ID ${playerCharacter.id}`);
+  if (!player) {
+    Logger.getInstance().error(`Could not find player with ID ${playerCharacter.playerId}`);
     return 'unknown sender';
   }
 
   return player.get('_displayname');
 }
 
-export function getTokenNameFromId(id: string): string | undefined {
+export function getGraphicTokenFromId(id: string): Graphic | undefined {
   const graphicObj = getObj('graphic', id);
-  
-  if(graphicObj && graphicObj.get('_subtype') === 'token') {
-    return graphicObj.get('name')
+
+  if (graphicObj && graphicObj.get('_subtype') === 'token') {
+    return graphicObj;
   }
 
   return;
+}
+
+export function getCharacterFromTokenId(id: string): Character | undefined {
+  const token = getGraphicTokenFromId(id);
+
+  if (!token) {
+    return;
+  }
+
+  const character = getObj('character', token.get('represents'));
+
+  if (!character) {
+    return;
+  }
+
+  return character;
 }

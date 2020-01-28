@@ -219,6 +219,8 @@ interface CharacterMutableAsynchronousGetProperties {
 
 interface Character extends Roll20ObjectBase<CharacterImmutableSynchronousGetProperties, CharacterImmutableAsynchronousGetProperties, CharacterMutableSynchronousGetProperties, CharacterMutableAsynchronousGetProperties> { }
 
+interface OldCharacter extends CharacterImmutableSynchronousGetProperties, CharacterMutableSynchronousGetProperties { }
+
 interface AttributeImmutableSynchronousGetProperties extends Roll20ObjectBaseProperties {
     readonly _type: "attribute";
     readonly _characterid: string;
@@ -454,6 +456,8 @@ declare function log(message: any): void;
 declare function on(event: "ready", callback: () => void): void;
 declare function on(event: "chat:message", callback: (msg: ChatEventData) => void): void;
 declare function on(event: "change:campaign:turnorder", callback: (obj: Campaign, prev: CampaignImmutableSynchronousGetProperties & CampaignMutableSynchronousGetProperties) => void): void;
+declare function on(event: "change:character", callback: (obj: Character, prev: OldCharacter) => void): void;
+
 
 /**
  * Sends a chat message.

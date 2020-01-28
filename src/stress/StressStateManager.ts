@@ -33,17 +33,16 @@ export class StressStateManager {
    *
    * @param character new character to add. Properties acquired from chat user.
    */
-  addNewStressedCharacter(character: PlayerCharacter) {
-    if (this.characterExists(character)) {
+  addNewStressedCharacter(playerCharacter: PlayerCharacter) {
+    if (this.characterExists(playerCharacter)) {
       this.logger.error(
-        `Tried adding existing character to StressState: ${character.name}`
+        `Tried adding existing character to StressState: ${playerCharacter.name}`
       );
       return;
     }
 
     const stressedCharacter: StressedCharacter = {
-      id: character.id,
-      name: character.name,
+      ...playerCharacter,
       stressValue: 0,
       stresses: []
     };
@@ -51,15 +50,15 @@ export class StressStateManager {
     state.StressNS.characters.push(stressedCharacter);
 
     this.logger.info(
-      `Added new character ${character.name} to StressState`
+      `Added new character ${playerCharacter.name} to StressState`
     );
 
-    this.stressAbilityCreator.createStressAbilitiesOnCharacter(character);
+    this.stressAbilityCreator.createStressAbilityOnCharacter(playerCharacter);
   }
 
   /**
    * Updates an existing {@link StressedCharacter} with new values. Overwrites the whole
-   * object. Updating is based on character name.
+   * object. Updating is based on character id.
    * 
    * If the character can't be found this function exits silently.
    * 
@@ -80,7 +79,7 @@ export class StressStateManager {
 
   /**
    * Get a {@link StressedCharacter} from the persisted state based on a {@link PlayerCharacter}.
-   * Finding a character is based on name.
+   * Finding a character is based on character id.
    * 
    * If no character can be found returns undefined instead.
    * 
@@ -101,7 +100,7 @@ export class StressStateManager {
   private findCharacterIndex(character: PlayerCharacter): number {
     const index = state.StressNS.characters.findIndex((_character: StressedCharacter) => {
       return (
-        _character.id === character.id && _character.name === character.name
+        _character.characterId === character.characterId
       );
     });
 

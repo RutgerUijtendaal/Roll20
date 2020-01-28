@@ -67,6 +67,7 @@ export class StressRemovalService {
   }
 
   private undoStress(stressedCharacter: StressedCharacter, stress: StressItemBase) {
-    updateNumericalPropertyWithValue(stress.targetAttribute, stressedCharacter.name, stress.attributeModifier * -1);
+    stress.attributeModifier = stress.attributeModifier * -1
+    updateNumericalPropertyWithValue(stressedCharacter, stress);
   }
 }

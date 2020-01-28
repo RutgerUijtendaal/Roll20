@@ -30,7 +30,7 @@ export class StressAdditionService {
 
     stressesToAdd.forEach(stressToAdd => {
       if (this.isStressItemAlreadyPresent(stressToAdd, stressedCharacter)) {
-        this.logger.info(`Stress ${stressToAdd.name} already present on ${stressedCharacter.name}`)
+        this.logger.debug(`Stress ${stressToAdd.name} already present on ${stressedCharacter.name}`)
         stressedCharacter = this.addDoubleStress(stressedCharacter);
       } else {
         stressedCharacter = this.addStress(stressedCharacter, stressToAdd);
@@ -50,7 +50,7 @@ export class StressAdditionService {
     // Mixin the first stress with the current oldest stress that has no mixin yet
     for (let index = 0; index < stressedCharacter.stresses.length; index++) {
       if (stressedCharacter.stresses[index].mixin === undefined) {
-        this.logger.info(`Added mixin on index ${index}`)
+        this.logger.debug(`Added mixin on index ${index}`)
         stressedCharacter.stresses[index].mixin = (stressesToAdd[0] as StressItemBase);
         this.doStress(stressedCharacter, stressedCharacter.stresses[index].mixin!!)
         this.chatter.sendDoubleStressDebuffGainedMessage(
@@ -82,6 +82,6 @@ export class StressAdditionService {
   }
 
   private doStress(stressedCharacter: StressedCharacter, stress: StressItemBase) {
-    updateNumericalPropertyWithValue(stress.targetAttribute, stressedCharacter.name, stress.attributeModifier);
+    updateNumericalPropertyWithValue(stressedCharacter, stress);
   }
 }

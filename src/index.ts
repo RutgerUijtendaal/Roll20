@@ -6,6 +6,7 @@ import { Chatter } from './shared/Chatter';
 import { StressAbilityCreator } from './stress/StressAbilityCreator';
 import { StressRemovalService } from './stress/StressRemovalService';
 import { StressAdditionService } from './stress/StressAdditionService';
+import { StressNameChangeListener } from './stress/StressNameChangeListener';
 
 const chatter = new Chatter();
 const stressAbilityCreator = new StressAbilityCreator();
@@ -18,6 +19,7 @@ const stressProcessor = new StressProcessor(
   stressAdditionService,
   stressRemovalService,
   chatter
-);
-
+  );
+  
+new StressNameChangeListener(stressStateManager);
 new StressCommandHandler(stressStateManager, stressProcessor);
