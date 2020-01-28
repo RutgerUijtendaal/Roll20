@@ -3,19 +3,27 @@ import { StressProcessorService } from '../services/StressProcessorService';
 import { Roll20Util } from '../../shared/Roll20Util';
 import { StressChatter } from '../util/StressChatter';
 import { Logger } from '../../shared/Logger';
+import { StressAbilityCreator } from '../util/StressAbilityCreator';
+import { StressFileWriter } from '../util/StressFileWriter';
 
 export class StressCommandHandler {
   stressStateManager: StressStateManager;
   stressProcessor: StressProcessorService;
+  stressAbilityCreator: StressAbilityCreator;
+  stressFileWriter: StressFileWriter;
   chatter: StressChatter;
 
   public constructor(
     stressStateManager: StressStateManager,
     stressProcessor: StressProcessorService,
+    stressAbilityCreator: StressAbilityCreator,
+    stressFileWriter: StressFileWriter,
     chatter: StressChatter
   ) {
     this.stressStateManager = stressStateManager;
     this.stressProcessor = stressProcessor;
+    this.stressAbilityCreator = stressAbilityCreator;
+    this.stressFileWriter = stressFileWriter;
     this.chatter = chatter;
     this.register();
   }
@@ -36,7 +44,7 @@ export class StressCommandHandler {
     const playerCharacter = this.extractPlayerCharacterFromMessage(message);
 
     if(playerCharacter === undefined) {
-      this.chatter.sendErrorFeedback((message.playerid), 'Make sure to only select 1 token. And that token is associated with a character');
+      this.chatter.sendFeedback((message.playerid), 'Make sure to only select 1 token. And that token is associated with a character');
       Logger.error(`No character found for message`)
       return;
     }
@@ -50,11 +58,21 @@ export class StressCommandHandler {
     }
   }
 
+  private handleNewStressCharacter(message: ChatEventData, playerCharacter: PlayerCharacter) {
+    const stressedCharacter = this.stressStateManager.addNewStressedCharacter(playerCharacter);
+
+    if(stressedCharacter !== undefined) {
+      this.stressAbilityCreator.createStressAbilityOnCharacter(playerCharacter);
+      this.stressFileWriter.createEmptyStressNote(playerCharacter);
+      this.chatter.sendWelcomeMessage(playerCharacter);
+    }
+  }
+
   private handleStressUpdate(message: ChatEventData, playerCharacter: PlayerCharacter) {
     const amount = this.extractStressAmount(message.content);
 
     if (!amount) {
-      this.chatter.sendErrorFeedback(playerCharacter.playerId, `Amount can only be numbers`)
+      this.chatter.sendFeedback(playerCharacter.playerId, `Amount can only be numbers`)
       return;
     }
 
@@ -65,9 +83,6 @@ export class StressCommandHandler {
     }
   }
 
-  private handleNewStressCharacter(message: ChatEventData, playerCharacter: PlayerCharacter) {
-    this.stressStateManager.addNewStressedCharacter(playerCharacter);
-  }
 
   private handleAddStress(amountToAdd: number, playerCharacter: PlayerCharacter) {
     this.stressProcessor.processStressAddition({

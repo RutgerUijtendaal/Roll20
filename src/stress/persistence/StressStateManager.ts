@@ -3,10 +3,7 @@ import { environment } from '../../env';
 import { StressAbilityCreator } from '../util/StressAbilityCreator';
 
 export class StressStateManager {
-  stressAbilityCreator: StressAbilityCreator;
-
-  constructor(stressAbilityCreator: StressAbilityCreator) {
-    this.stressAbilityCreator = stressAbilityCreator;
+  constructor() {
     Logger.info('Initialize StressManager');
 
     if (environment === 'test') {
@@ -16,7 +13,7 @@ export class StressStateManager {
 
     if (!state.StressNS) {
       this.initializeState();
-    } else if(environment === 'test') {
+    } else if (environment === 'test') {
       this.debugState();
     }
   }
@@ -31,11 +28,9 @@ export class StressStateManager {
    *
    * @param character new character to add. Properties acquired from chat user.
    */
-  addNewStressedCharacter(playerCharacter: PlayerCharacter) {
+  addNewStressedCharacter(playerCharacter: PlayerCharacter): StressedCharacter | undefined {
     if (this.characterExists(playerCharacter)) {
-      Logger.error(
-        `Tried adding existing character to StressState: ${playerCharacter.name}`
-      );
+      Logger.error(`Tried adding existing character to StressState: ${playerCharacter.name}`);
       return;
     }
 
@@ -47,41 +42,35 @@ export class StressStateManager {
 
     state.StressNS.characters.push(stressedCharacter);
 
-    Logger.info(
-      `Added new character ${playerCharacter.name} to StressState`
-    );
+    Logger.info(`Added new character ${playerCharacter.name} to StressState`);
 
-    this.stressAbilityCreator.createStressAbilityOnCharacter(playerCharacter);
+    return stressedCharacter;
   }
 
   /**
    * Updates an existing {@link StressedCharacter} with new values. Overwrites the whole
    * object. Updating is based on character id.
-   * 
+   *
    * If the character can't be found this function exits silently.
-   * 
-   * @param stressedCharacter StressedCharacter to update. 
+   *
+   * @param stressedCharacter StressedCharacter to update.
    */
   updateStressedCharacter(stressedCharacter: StressedCharacter) {
     if (!this.characterExists(stressedCharacter)) {
-      Logger.error(
-        `Attempted to update unknown character: ${stressedCharacter.name}`
-      );
+      Logger.error(`Attempted to update unknown character: ${stressedCharacter.name}`);
       return;
     }
 
-    this.getState().characters[
-      this.findCharacterIndex(stressedCharacter)
-    ] = stressedCharacter;
+    this.getState().characters[this.findCharacterIndex(stressedCharacter)] = stressedCharacter;
   }
 
   /**
    * Get a {@link StressedCharacter} from the persisted state based on a {@link PlayerCharacter}.
    * Finding a character is based on character id.
-   * 
+   *
    * If no character can be found returns undefined instead.
-   * 
-   * @param character 
+   *
+   * @param character
    */
   getStressedCharacter(character: PlayerCharacter): StressedCharacter | undefined {
     if (!this.characterExists(character)) {
@@ -97,9 +86,7 @@ export class StressStateManager {
 
   private findCharacterIndex(character: PlayerCharacter): number {
     const index = state.StressNS.characters.findIndex((_character: StressedCharacter) => {
-      return (
-        _character.characterId === character.characterId
-      );
+      return _character.characterId === character.characterId;
     });
 
     return index;
@@ -107,19 +94,16 @@ export class StressStateManager {
 
   private debugState() {
     this.getState().characters.forEach((char: StressedCharacter) => {
-      Logger.debug(
-        `char: ${char.name} with stresses:`)
+      Logger.debug(`char: ${char.name} with stresses:`);
 
       char.stresses.forEach((stress: StressItem) => {
-        Logger.debug(
-          `${stress.name}`
-        )
+        Logger.debug(`${stress.name}`);
 
-        if(stress.mixin !== undefined) {
-          Logger.debug(`And mixin: ${stress.mixin.name}`)
+        if (stress.mixin !== undefined) {
+          Logger.debug(`And mixin: ${stress.mixin.name}`);
         }
-      })
-    })
+      });
+    });
   }
 
   private initializeState() {

@@ -5,7 +5,7 @@ import { Roll20Util } from './Roll20Util';
 export abstract class Chatter {
   name = botName || 'Nameless bot';
 
-  sendErrorFeedback(playerId: string, message: string) {
+  sendFeedback(playerId: string, message: string) {
     this.sendBotWhisper(Roll20Util.getPlayerDisplayNameById(playerId), message)
   }
   

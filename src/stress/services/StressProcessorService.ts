@@ -4,23 +4,27 @@ import { StressChatter } from '../util/StressChatter';
 import { stressModifier } from '../../env';
 import { StressAdditionService } from './StressAdditionService';
 import { StressRemovalService } from './StressRemovalService';
+import { StressFileWriter } from '../util/StressFileWriter';
 
 export class StressProcessorService {
   stressModifier = stressModifier || 5;
   stressStateManager: StressStateManager;
   stressAdditionService: StressAdditionService;
   stressRemovalService: StressRemovalService;
+  stressFileWriter: StressFileWriter;
   chatter: StressChatter;
 
   constructor(
     stressStateManager: StressStateManager,
     stressAdditionService: StressAdditionService,
     stressRemovalService: StressRemovalService,
+    stressFileWriter: StressFileWriter,
     chatter: StressChatter
   ) {
     this.stressStateManager = stressStateManager;
     this.stressAdditionService = stressAdditionService;
     this.stressRemovalService = stressRemovalService;
+    this.stressFileWriter = stressFileWriter;
     this.chatter = chatter;
   }
 
@@ -44,6 +48,7 @@ export class StressProcessorService {
 
     this.chatter.sendStressGainedWhisper(stressUpdate);
     this.stressStateManager.updateStressedCharacter(stressCharacter);
+    this.stressFileWriter.updateStressNoteForStressedCharacter(stressCharacter);
   }
 
   /**
@@ -72,6 +77,7 @@ export class StressProcessorService {
 
     this.chatter.sendStressLostWhisper(stressUpdate);
     this.stressStateManager.updateStressedCharacter(stressCharacter);
+    this.stressFileWriter.updateStressNoteForStressedCharacter(stressCharacter);
   }
 
   private updateStressAmount(

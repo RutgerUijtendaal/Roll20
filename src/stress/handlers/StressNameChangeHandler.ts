@@ -1,11 +1,14 @@
 import { Logger } from '../../shared/Logger';
 import { StressStateManager } from '../persistence/StressStateManager';
+import { StressFileWriter } from '../util/StressFileWriter';
 
 export class StressNameChangeHandler {
   stressStateManager: StressStateManager;
+  stressFileWriter: StressFileWriter;
 
-  constructor(stressStateManager: StressStateManager) {
+  constructor(stressStateManager: StressStateManager, stressFileWriter: StressFileWriter) {
     this.stressStateManager = stressStateManager;
+    this.stressFileWriter = stressFileWriter;
     this.register();
   }
 
@@ -33,5 +36,6 @@ export class StressNameChangeHandler {
     stressedCharacter.name = cur.get('name');
     Logger.info(`Changed name ${prev.name} to ${stressedCharacter.name}`)
     this.stressStateManager.updateStressedCharacter(stressedCharacter);
+    this.stressFileWriter.updateStressNoteName(prev.name, stressedCharacter.name);
   }
 }
