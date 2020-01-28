@@ -70,9 +70,13 @@ export class StressStateManager {
     ] = stressedCharacter;
   }
 
-  getStressedCharacter(character: PlayerCharacter): StressedCharacter | null {
+  /**
+   * 
+   * @param character 
+   */
+  getStressedCharacter(character: PlayerCharacter): StressedCharacter | undefined {
     if (!this.characterExists(character)) {
-      return null;
+      return undefined;
     }
 
     return state.StressNS.characters[this.findCharacterIndex(character)];

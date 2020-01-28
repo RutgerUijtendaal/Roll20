@@ -23,46 +23,45 @@ export class Chatter {
     '{{New value= @{{0}|{5}} {5} }}' +
     '{{Stress level= {6} }}'
 
-  sendBotWhisper(to: string, content: string) {
-    const message = `/w "${to}" ${content}`
-    Logger.getInstance().debug(`Sending message ${message}`)
-    sendChat("", message, null, {noarchive:true})
-  }
-
-  sendBotAnnouncement(message: string) {
-    Logger.getInstance().debug(`Sending message ${message}`)
-    sendChat(this.name, message, null, {noarchive:true});
-  }
-
-  sendStressGainedMessage(stressedCharacter: StressedCharacter, amount: number) {
+  sendStressGainedWhisper(stressedCharacter: StressedCharacter, amount: number) {
     this.sendBotWhisper(getPlayerDisplayName(stressedCharacter), `Gained ${amount} stress`)
   }
 
-  sendStressLostMessage(stressedCharacter: StressedCharacter, amount: number) {
+  sendStressLostWhisper(stressedCharacter: StressedCharacter, amount: number) {
     this.sendBotWhisper(getPlayerDisplayName(stressedCharacter), `Lost ${amount} stress`)
   }
 
   sendDoubleStressDebuffGainedMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
-    if(!stress.mixin) {
-      Logger.getInstance().error(`Tried to send doubleStressDebuffGained message for ${stressedCharacter.name}, but mixin was undefined.`)
-      return;
-    }
+    this.sendDoubleStressMessage(stressedCharacter, stress, 'Gained')
+  }
 
+  sendDoubleStressDebuffLostMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
+    this.sendDoubleStressMessage(stressedCharacter, stress, 'Lost')
+  }
+
+  sendStressDebuffGainedMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
+    this.sendStressMessage(stressedCharacter, stress, 'Gained')
+
+  }
+
+  sendStressDebuffLostMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
+    this.sendStressMessage(stressedCharacter, stress, 'Lost')
+  }
+
+  private sendStressMessage(stressedCharacter: StressedCharacter, stress: StressItem, type: string) {
     let message = this.stringFormat(
-      this.doubleAttributeStressBase,
+      this.attributeStressBase,
       stressedCharacter.name,
-      'Gained',
+      type,
       stress.name,
       stress.targetAttribute,
-      stress.mixin.name,
-      stress.mixin.targetAttribute,
       ""+stressedCharacter.stressValue    
     );
 
     this.sendBotAnnouncement(message);
   }
 
-  sendDoubleStressDebuffLostMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
+  private sendDoubleStressMessage(stressedCharacter: StressedCharacter, stress: StressItem, type: string) {
     if(!stress.mixin) {
       Logger.getInstance().error(`Tried to send doubleStressDebuffLost message for ${stressedCharacter.name}, but mixin was undefined.`)
       return;
@@ -71,37 +70,11 @@ export class Chatter {
     let message = this.stringFormat(
       this.doubleAttributeStressBase,
       stressedCharacter.name,
-      'Lost',
+      type,
       stress.name,
       stress.targetAttribute,
       stress.mixin.name,
       stress.mixin.targetAttribute,
-      ""+stressedCharacter.stressValue    
-    );
-
-    this.sendBotAnnouncement(message);
-  }
-
-  sendStressDebuffGainedMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
-    let message = this.stringFormat(
-      this.attributeStressBase,
-      stressedCharacter.name,
-      'Gained',
-      stress.name,
-      stress.targetAttribute,
-      ""+stressedCharacter.stressValue    
-    );
-
-    this.sendBotAnnouncement(message);
-  }
-
-  sendStressDebuffLostMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
-    let message = this.stringFormat(
-      this.attributeStressBase,
-      stressedCharacter.name,
-      'Lost',
-      stress.name,
-      stress.targetAttribute,
       ""+stressedCharacter.stressValue    
     );
 
@@ -111,4 +84,16 @@ export class Chatter {
   private stringFormat(str: string, ...args: string[]): string {
     return str.replace(/{(\d+)}/g, (match, index) => args[index] || '');
   }
+
+  private sendBotWhisper(to: string, content: string) {
+    const message = `/w "${to}" ${content}`
+    Logger.getInstance().debug(`Sending message ${message}`)
+    sendChat("", message, null, {noarchive:true})
+  }
+
+  private sendBotAnnouncement(message: string) {
+    Logger.getInstance().debug(`Sending message ${message}`)
+    sendChat(this.name, message, null, {noarchive:true});
+  }
+
 }
