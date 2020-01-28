@@ -44,11 +44,11 @@ export function updateNumericalPropertyWithValue(
   property.setWithWorker('current', String(current + stress.attributeModifier));
 }
 
-export function getPlayerDisplayName(playerCharacter: PlayerCharacter): string {
-  const player: Player | undefined = getObj('player', playerCharacter.playerId);
+export function getPlayerDisplayNameById(playerId: string): string {
+  const player: Player | undefined = getObj('player', playerId);
 
   if (!player) {
-    Logger.getInstance().error(`Could not find player with ID ${playerCharacter.playerId}`);
+    Logger.getInstance().error(`Could not find player with ID ${playerId}`);
     return 'unknown sender';
   }
 

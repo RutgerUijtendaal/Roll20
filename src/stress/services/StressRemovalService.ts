@@ -1,7 +1,7 @@
-import { Chatter } from '../shared/Chatter';
-import { Logger } from '../shared/Logger';
-import { StressItemManager } from './StressItemManager';
-import { updateNumericalPropertyWithValue } from '../shared/util';
+import { Chatter } from '../../shared/Chatter';
+import { Logger } from '../../shared/Logger';
+import { StressItemManager } from '../items/StressItemManager';
+import { updateNumericalPropertyWithValue } from '../../shared/util';
 
 export class StressRemovalService {
   stressItemManager: StressItemManager;

@@ -1,5 +1,5 @@
 import { stresses } from './StressItems';
-import { ObjectHelper } from '../shared/ObjectHelper';
+import { ObjectHelper } from '../../shared/ObjectHelper';
 
 export class StressItemManager {
   stressItems: StressItem[];

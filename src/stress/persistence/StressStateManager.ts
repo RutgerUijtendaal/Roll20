@@ -1,6 +1,6 @@
-import { Logger } from '../shared/Logger';
-import { environment } from '../env';
-import { StressAbilityCreator } from './StressAbilityCreator';
+import { Logger } from '../../shared/Logger';
+import { environment } from '../../env';
+import { StressAbilityCreator } from '../util/StressAbilityCreator';
 
 export class StressStateManager {
   stressAbilityCreator: StressAbilityCreator;

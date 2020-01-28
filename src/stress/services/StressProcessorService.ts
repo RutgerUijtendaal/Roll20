@@ -1,11 +1,11 @@
-import { StressStateManager } from './StressStateManager';
-import { Logger } from '../shared/Logger';
-import { Chatter } from '../shared/Chatter';
-import { stressModifier } from '../env';
+import { StressStateManager } from '../persistence/StressStateManager';
+import { Logger } from '../../shared/Logger';
+import { Chatter } from '../../shared/Chatter';
+import { stressModifier } from '../../env';
 import { StressAdditionService } from './StressAdditionService';
 import { StressRemovalService } from './StressRemovalService';
 
-export class StressProcessor {
+export class StressProcessorService {
   stressModifier = stressModifier || 5;
   logger: Logger;
   stressStateManager: StressStateManager;

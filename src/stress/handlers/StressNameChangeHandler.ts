@@ -1,7 +1,7 @@
-import { Logger } from '../shared/Logger';
-import { StressStateManager } from './StressStateManager';
+import { Logger } from '../../shared/Logger';
+import { StressStateManager } from '../persistence/StressStateManager';
 
-export class StressNameChangeListener {
+export class StressNameChangeHandler {
   stressStateManager: StressStateManager;
   logger: Logger;
 
@@ -12,16 +12,16 @@ export class StressNameChangeListener {
   }
 
   register() {
-    this.logger.info('Registering Stress Command Handler');
+    this.logger.info('Registering Stress Name Change Handler');
 
     on('change:character', (cur, prev) => {
       if (cur.get('name') !== prev.name) {
-        this.handleNameChange(cur, prev);
+        this.handle(cur, prev);
       }
     });
   }
 
-  private handleNameChange(cur: Character, prev: OldCharacter) {
+  private handle(cur: Character, prev: OldCharacter) {
     const stressedCharacter = this.stressStateManager.getStressedCharacter({
       characterId: cur.id,
       playerId: '',

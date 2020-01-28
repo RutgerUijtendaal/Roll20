@@ -1,34 +1,38 @@
 import { botName } from "../env";
 import { Logger } from './Logger';
-import { getPlayerDisplayName } from "./util";
+import { getPlayerDisplayNameById } from "./util";
 
 export class Chatter {
   name = botName || 'Nameless bot';
 
   attributeStressBase = 
-    '&{template:default}' + 
-    '{{name=Stress for {0} }}' + 
-    '{{Type={1} }}' + 
-    '{{Effect= {2} }}' + 
-    '{{New value= @{{0}|{3}} {3} }}' +
-    '{{Stress level= {4} }}'
+  '&{template:default}' + 
+  '{{name=Stress for {0} }}' + 
+  '{{Type={1} }}' + 
+  '{{Effect= {2} }}' + 
+  '{{New value= @{{0}|{3}} {3} }}' +
+  '{{Stress level= {4} }}'
 
   doubleAttributeStressBase = 
-    '&{template:default}' + 
-    '{{name=Double Stress for {0} }}' + 
+  '&{template:default}' + 
+  '{{name=Double Stress for {0} }}' + 
     '{{Type={1} }}' + 
     '{{Old effect = {2} }}' + 
     '{{Value= @{{0}|{3}} {3} }}' +
     '{{Additional effect = {4} }}' + 
     '{{New value= @{{0}|{5}} {5} }}' +
     '{{Stress level= {6} }}'
+    
+  sendErrorFeedback(playerId: string, message: string) {
+    this.sendBotWhisper(getPlayerDisplayNameById(playerId), message)
+  }
 
   sendStressGainedWhisper(stressUpdate: StressUpdate) {
-    this.sendBotWhisper(getPlayerDisplayName(stressUpdate), `Gained ${stressUpdate.amount} stress`)
+    this.sendBotWhisper(getPlayerDisplayNameById(stressUpdate.playerId), `Gained ${stressUpdate.amount} stress`)
   }
 
   sendStressLostWhisper(stressUpdate: StressUpdate) {
-    this.sendBotWhisper(getPlayerDisplayName(stressUpdate), `Lost ${stressUpdate.amount} stress`)
+    this.sendBotWhisper(getPlayerDisplayNameById(stressUpdate.playerId), `Lost ${stressUpdate.amount} stress`)
   }
 
   sendDoubleStressDebuffGainedMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
@@ -81,10 +85,6 @@ export class Chatter {
     this.sendBotAnnouncement(message);
   }
 
-  private stringFormat(str: string, ...args: string[]): string {
-    return str.replace(/{(\d+)}/g, (match, index) => args[index] || '');
-  }
-
   private sendBotWhisper(to: string, content: string) {
     const message = `/w "${to}" ${content}`
     Logger.getInstance().debug(`Sending message ${message}`)
@@ -95,5 +95,10 @@ export class Chatter {
     Logger.getInstance().debug(`Sending message ${message}`)
     sendChat(this.name, message, null, {noarchive:true});
   }
+
+  private stringFormat(str: string, ...args: string[]): string {
+    return str.replace(/{(\d+)}/g, (match, index) => args[index] || '');
+  }
+
 
 }

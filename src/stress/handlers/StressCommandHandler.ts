@@ -1,20 +1,24 @@
-import { Logger } from '../shared/Logger';
-import { StressStateManager } from './StressStateManager';
-import { StressProcessor } from './StressProcessor';
-import { getCharacterFromTokenId } from '../shared/util';
+import { Logger } from '../../shared/Logger';
+import { StressStateManager } from '../persistence/StressStateManager';
+import { StressProcessorService } from '../services/StressProcessorService';
+import { getCharacterFromTokenId, getPlayerDisplayNameById } from '../../shared/util';
+import { Chatter } from '../../shared/Chatter';
 
-export class StressCommandHandler implements CommandHandler {
+export class StressCommandHandler {
   stressStateManager: StressStateManager;
-  stressProcessor: StressProcessor;
+  stressProcessor: StressProcessorService;
+  chatter: Chatter;
   logger: Logger;
 
   public constructor(
     stressStateManager: StressStateManager,
-    stressProcessor: StressProcessor,
+    stressProcessor: StressProcessorService,
+    chatter: Chatter
   ) {
     this.logger = Logger.getInstance();
     this.stressStateManager = stressStateManager;
     this.stressProcessor = stressProcessor;
+    this.chatter = chatter;
     this.register();
   }
 
@@ -34,7 +38,8 @@ export class StressCommandHandler implements CommandHandler {
     const playerCharacter = this.extractPlayerCharacterFromMessage(message);
 
     if(playerCharacter === undefined) {
-      this.logger.error(`Undefined character found for message`)
+      this.chatter.sendErrorFeedback((message.playerid), 'Make sure to only select 1 token. And that token is associated with a character');
+      this.logger.error(`No character found for message`)
       return;
     }
 

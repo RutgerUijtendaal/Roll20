@@ -1,4 +1,4 @@
-import { Logger } from '../shared/Logger';
+import { Logger } from '../../shared/Logger';
 
 export class StressAbilityCreator {
   /**
