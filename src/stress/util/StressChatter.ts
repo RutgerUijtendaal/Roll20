@@ -3,27 +3,23 @@ import { Roll20Util } from '../../shared/Roll20Util';
 import { Logger } from '../../shared/Logger';
 
 export class StressChatter extends Chatter {
+  // TODO build these messages based on multiple attributes
   attributeStressBase = 
   '&{template:default}' + 
   '{{name=Stress for {0} }}' + 
   '{{Type={1} }}' + 
   '{{Effect= {2} }}' + 
-  '{{New value= @{{0}|{3}} {3} }}' +
   '{{Stress level= {4} }}'
 
+  // TODO build these messages based on multiple attributes
   doubleAttributeStressBase = 
   '&{template:default}' + 
   '{{name=Double Stress for {0} }}' + 
     '{{Type={1} }}' + 
     '{{Old effect = {2} }}' + 
-    '{{Value= @{{0}|{3}} {3} }}' +
     '{{Additional effect = {4} }}' + 
-    '{{New value= @{{0}|{5}} {5} }}' +
     '{{Stress level= {6} }}'
-    
-  sendErrorFeedback(playerId: string, message: string) {
-    this.sendBotWhisper(Roll20Util.getPlayerDisplayNameById(playerId), message)
-  }
+  
 
   sendStressGainedWhisper(stressUpdate: StressUpdate) {
     this.sendBotWhisper(Roll20Util.getPlayerDisplayNameById(stressUpdate.playerId), `Gained ${stressUpdate.amount} stress`)
@@ -56,7 +52,6 @@ export class StressChatter extends Chatter {
       stressedCharacter.name,
       type,
       stress.name,
-      stress.targetAttribute,
       ""+stressedCharacter.stressValue    
     );
 
@@ -74,9 +69,7 @@ export class StressChatter extends Chatter {
       stressedCharacter.name,
       type,
       stress.name,
-      stress.targetAttribute,
       stress.mixin.name,
-      stress.mixin.targetAttribute,
       ""+stressedCharacter.stressValue    
     );
 

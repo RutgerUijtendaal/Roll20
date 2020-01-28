@@ -80,6 +80,6 @@ export class StressAdditionService {
   }
 
   private doStress(stressedCharacter: StressedCharacter, stress: StressItemBase) {
-    Roll20Util.updateNumericalPropertyWithValue(stressedCharacter, stress);
+    Roll20Util.updateNumericalPropertiesWithValue(stressedCharacter, stress);
   }
 }

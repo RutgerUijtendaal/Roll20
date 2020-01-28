@@ -45,51 +45,46 @@ export class StressCommandHandler {
       this.handleNewStressCharacter(message, playerCharacter);
     }
 
-    if (message.content.indexOf('!+stress') !== -1) {
-      this.handleAddStress(message, playerCharacter);
+    if (message.content.indexOf('!+-stress') !== -1) {
+      this.handleStressUpdate(message, playerCharacter);
+    }
+  }
+
+  private handleStressUpdate(message: ChatEventData, playerCharacter: PlayerCharacter) {
+    const amount = this.extractStressAmount(message.content);
+
+    if (!amount) {
+      this.chatter.sendErrorFeedback(playerCharacter.playerId, `Amount can only be numbers`)
+      return;
     }
 
-    if (message.content.indexOf('!-stress') !== -1) {
-      this.handleRemoveStress(message, playerCharacter);
+    if(amount > 0) {
+      this.handleAddStress(amount, playerCharacter);
+    } else {
+      this.handleRemoveStress(amount, playerCharacter);
     }
   }
 
   private handleNewStressCharacter(message: ChatEventData, playerCharacter: PlayerCharacter) {
     this.stressStateManager.addNewStressedCharacter(playerCharacter);
-
-    return;
   }
 
-  private handleAddStress(message: ChatEventData, playerCharacter: PlayerCharacter) {
-    const amountToAdd = this.extractStressAmount(message.content);
-
-    if (!amountToAdd) {
-      return;
-    }
-
+  private handleAddStress(amountToAdd: number, playerCharacter: PlayerCharacter) {
     this.stressProcessor.processStressAddition({
       ...playerCharacter,
       amount: amountToAdd
     });
-
-    return;
   }
 
-  private handleRemoveStress(message: ChatEventData, playerCharacter: PlayerCharacter) {
-    const amountToRemove = this.extractStressAmount(message.content);
-
-    if (!amountToRemove) {
-      return;
-    }
-
+  private handleRemoveStress(amountToRemove: number, playerCharacter: PlayerCharacter) {
     this.stressProcessor.processStressRemoval({
       ...playerCharacter,
-      amount: amountToRemove * -1
+      amount: amountToRemove
     });
   }
 
   private extractStressAmount(message: string): number | undefined {
-    const numbersRegex = /^[0-9]+$/;
+    const numbersRegex = /^-?[0-9]+$/;
     const amount = message.substr(message.indexOf(' ') + 1);
 
     if (amount.match(numbersRegex)) {

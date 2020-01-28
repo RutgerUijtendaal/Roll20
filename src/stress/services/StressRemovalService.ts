@@ -66,6 +66,6 @@ export class StressRemovalService {
 
   private undoStress(stressedCharacter: StressedCharacter, stress: StressItemBase) {
     stress.attributeModifier = stress.attributeModifier * -1
-    Roll20Util.updateNumericalPropertyWithValue(stressedCharacter, stress);
+    Roll20Util.updateNumericalPropertiesWithValue(stressedCharacter, stress);
   }
 }

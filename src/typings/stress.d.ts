@@ -19,7 +19,7 @@ interface StressItemBase {
   id: number;
   type: StressType;
   name: string;
-  targetAttribute: string;
+  targetAttributes: string[];
   attributeModifier: number;
 }
 

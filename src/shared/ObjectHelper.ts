@@ -15,7 +15,9 @@ export class ObjectHelper {
     }
     if (target instanceof Array) {
       const cp = [] as any[];
-      (target as any[]).forEach((v) => { cp.push(v); });
+      (target as any[]).forEach(v => {
+        cp.push(v);
+      });
       return cp.map((n: any) => ObjectHelper.deepCopy<any>(n)) as any;
     }
     if (typeof target === 'object' && target !== {}) {
@@ -27,4 +29,17 @@ export class ObjectHelper {
     }
     return target;
   };
+
+  public static hasDuplicates(array: StressItemBase[]) {
+    var valuesSoFar = Object.create(null);
+
+    for (var i = 0; i < array.length; ++i) {
+      var stressItem = array[i];
+      if (stressItem.id in valuesSoFar) {
+        return true;
+      }
+      valuesSoFar[stressItem.id] = true;
+    }
+    return false;
+  }
 }

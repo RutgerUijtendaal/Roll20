@@ -2,9 +2,13 @@ import { botName } from "../env";
 import { Logger } from './Logger';
 import { Roll20Util } from './Roll20Util';
 
-export class Chatter {
+export abstract class Chatter {
   name = botName || 'Nameless bot';
 
+  sendErrorFeedback(playerId: string, message: string) {
+    this.sendBotWhisper(Roll20Util.getPlayerDisplayNameById(playerId), message)
+  }
+  
   protected sendBotWhisper(to: string, content: string) {
     const message = `/w "${to}" ${content}`
     Logger.debug(`Sending message ${message}`)
