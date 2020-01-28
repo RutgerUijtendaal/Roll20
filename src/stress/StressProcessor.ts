@@ -3,6 +3,7 @@ import { StressStateManager } from './StressStateManager';
 import { Logger } from '../shared/Logger';
 import { Chatter } from '../shared/Chatter';
 import { stressModifier } from '../env';
+import { updateNumericalPropertyWithValue } from '../shared/util';
 
 export class StressProcessor {
   stressModifier = stressModifier || 5;
@@ -121,8 +122,8 @@ export class StressProcessor {
       return;
     }
 
-    stress.mixin.undoEffect(stressedCharacter);
-    stress.undoEffect(stressedCharacter);
+    this.undoStress(stressedCharacter, stress)
+    this.undoStress(stressedCharacter, stress.mixin)
     this.chatter.sendDoubleStressDebuffLostMessage(stressedCharacter, stress);
 
   }
@@ -134,7 +135,7 @@ export class StressProcessor {
    * @param stress StressItem to remove.
    */
   private removeStress(stressedCharacter: StressedCharacter, stress: StressItem) {
-    stress.undoEffect(stressedCharacter);
+    this.undoStress(stressedCharacter, stress)
     this.chatter.sendStressDebuffLostMessage(stressedCharacter, stress);
   }
 
@@ -169,7 +170,7 @@ export class StressProcessor {
     for (let index = 0; index < stressedCharacter.stresses.length; index++) {
       if (stressedCharacter.stresses[index].mixin === undefined) {
         stressedCharacter.stresses[index].mixin = (stressesToAdd[0] as StressItemBase);
-        stressedCharacter.stresses[index].mixin!!.doEffect(stressedCharacter);
+        this.doStress(stressedCharacter, stressedCharacter.stresses[index].mixin!!)
         this.chatter.sendDoubleStressDebuffGainedMessage(
           stressedCharacter,
           stressedCharacter.stresses[index]
@@ -189,8 +190,8 @@ export class StressProcessor {
   private addStress(
     stressedCharacter: StressedCharacter,
     stressItem: StressItem
-  ): StressedCharacter {
-    stressItem.doEffect(stressedCharacter);
+  ): StressedCharacter {;
+    this.doStress(stressedCharacter, stressItem)
     stressedCharacter.stresses.push(stressItem);
     this.chatter.sendStressDebuffGainedMessage(stressedCharacter, stressItem);
     return stressedCharacter;
@@ -240,5 +241,13 @@ export class StressProcessor {
     stressedCharacter: StressedCharacter
   ): boolean {
     return stressedCharacter.stresses.find(stress => stress.id === stressToAdd.id) !== undefined;
+  }
+
+  private doStress(stressedCharacter: StressedCharacter, stress: StressItemBase) {
+    updateNumericalPropertyWithValue(stress.targetAttribute, stressedCharacter.name, stress.attributeModifier);
+  }
+
+  private undoStress(stressedCharacter: StressedCharacter, stress: StressItemBase) {
+    updateNumericalPropertyWithValue(stress.targetAttribute, stressedCharacter.name, stress.attributeModifier * -1);
   }
 }

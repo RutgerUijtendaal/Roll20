@@ -18,8 +18,7 @@ const stressItemBase: StressItem = {
   type: 'debuff',
   name: 'Stress Base',
   targetAttribute: 'attributeTarget',
-  doEffect: stressedCharacter => {},
-  undoEffect: stressedCharacter => {}
+  attributeModifier: -2
 };
 
 /**

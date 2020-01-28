@@ -26,7 +26,7 @@ export class Chatter {
   sendBotWhisper(to: string, content: string) {
     const message = `/w "${to}" ${content}`
     Logger.getInstance().debug(`Sending message ${message}`)
-    sendChat("", message)
+    sendChat("", message, null, {noarchive:true})
   }
 
   sendBotAnnouncement(message: string) {

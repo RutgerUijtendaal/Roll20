@@ -20,8 +20,7 @@ interface StressItemBase {
   name: string;
   added?: number;
   targetAttribute: string;
-  doEffect: (stressedCharacter: StressedCharacter) => void;
-  undoEffect: (stressedCharacter: StressedCharacter) => void;
+  attributeModifier: number;
 }
 
 interface StressItem extends StressItemBase {

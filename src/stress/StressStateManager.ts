@@ -90,17 +90,15 @@ export class StressStateManager {
   private debugState() {
     this.getState().characters.forEach((char: StressedCharacter) => {
       this.logger.debug(
-        `char: ${char.name}
-         with stresses:`)
+        `char: ${char.name} with stresses:`)
 
       char.stresses.forEach((stress: StressItem) => {
-
         this.logger.debug(
-          `${stress.name} and mixin: ${stress.mixin}`
+          `${stress.name}`
         )
 
         if(stress.mixin !== undefined) {
-          this.logger.debug(`mixin name: ${stress.mixin.name} and function ${stress.mixin.undoEffect(char)}`)
+          this.logger.debug(`And mixin: ${stress.mixin.name}`)
         }
       })
     })

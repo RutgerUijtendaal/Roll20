@@ -5,12 +5,7 @@ const stressStrength: StressItem = {
   type: 'debuff',
   name: '-2 Strength',
   targetAttribute: 'strength',
-  doEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('strength', stressedCharacter.name, -2);
-  },
-  undoEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('strength', stressedCharacter.name, 2);
-  }
+  attributeModifier: -2
 };
 
 const stressCharisma: StressItem = {
@@ -18,12 +13,7 @@ const stressCharisma: StressItem = {
   type: 'debuff',
   name: '-2 Charisma',
   targetAttribute: 'charisma',
-  doEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('charisma', stressedCharacter.name, -2);
-  },
-  undoEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('charisma', stressedCharacter.name, 2);
-  }
+  attributeModifier: -2
 };
 
 const stressIntelligence: StressItem = {
@@ -31,12 +21,7 @@ const stressIntelligence: StressItem = {
   type: 'debuff',
   name: '-2 Intelligence',
   targetAttribute: 'intelligence',
-  doEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('intelligence', stressedCharacter.name, -2);
-  },
-  undoEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('intelligence', stressedCharacter.name, 2);
-  }
+  attributeModifier: -2
 };
 
 const stressWisdom: StressItem = {
@@ -44,12 +29,7 @@ const stressWisdom: StressItem = {
   type: 'debuff',
   name: '-2 Wisdom',
   targetAttribute: 'wisdom',
-  doEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('wisdom', stressedCharacter.name, -2);
-  },
-  undoEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('wisdom', stressedCharacter.name, 2);
-  }
+  attributeModifier: -2
 };
 
 const stressDexterity: StressItem = {
@@ -57,12 +37,7 @@ const stressDexterity: StressItem = {
   type: 'debuff',
   name: '-2 Dexterity',
   targetAttribute: 'dexterity',
-  doEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('dexterity', stressedCharacter.name, -2);
-  },
-  undoEffect: stressedCharacter => {
-    updateNumericalPropertyWithValue('dexterity', stressedCharacter.name, 2);
-  }
+  attributeModifier: -2
 };
 
 
