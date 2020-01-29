@@ -12,7 +12,7 @@ interface StressedCharacter extends PlayerCharacter {
   perseverences: PerseverenceItem[]
 }
 
-interface StressUpdate extends PlayerCharacter {
+interface StressUpdate extends StressedCharacter {
   amount: number;
 }
 

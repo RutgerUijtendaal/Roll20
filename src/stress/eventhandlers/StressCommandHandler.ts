@@ -43,66 +43,63 @@ export class StressCommandHandler {
 
     const playerCharacter = this.extractPlayerCharacterFromMessage(message);
 
-    if(playerCharacter === undefined) {
-      this.chatter.sendFeedback((message.playerid), 'Make sure to only select 1 token. And that token is associated with a character');
-      Logger.error(`No character found for message`)
+    if (message.content.indexOf('!stress') !== -1 && playerCharacter) {
+      this.handleNewStressCharacter(playerCharacter);
+    } else if (!playerCharacter) {
       return;
     }
 
-    if (message.content.indexOf('!stress') !== -1) {
-      this.handleNewStressCharacter(message, playerCharacter);
+    const stressedCharacter = this.findStressedCharacterByPlayerCharacter(playerCharacter);
+
+    if (message.content.indexOf('!+-stress') !== -1 && stressedCharacter) {
+      this.handleStressUpdate(message, stressedCharacter);
     }
 
-    if (message.content.indexOf('!+-stress') !== -1) {
-      this.handleStressUpdate(message, playerCharacter);
-    }
-
-    if (message.content.indexOf('!perseverence') !== -1) {
-      this.handlePerseverenceUpdate(message, playerCharacter);
+    if (message.content.indexOf('!perseverence') !== -1 && stressedCharacter) {
+      this.handlePerseverenceUpdate(message, stressedCharacter);
     }
   }
 
-  private handleNewStressCharacter(message: ChatEventData, playerCharacter: PlayerCharacter) {
+  private handleNewStressCharacter(playerCharacter: PlayerCharacter) {
     const stressedCharacter = this.stressStateManager.addNewStressedCharacter(playerCharacter);
 
-    if(stressedCharacter !== undefined) {
+    if (stressedCharacter !== undefined) {
       this.stressAbilityCreator.createStressAbilityOnCharacter(playerCharacter);
       this.stressFileWriter.createEmptyStressNote(playerCharacter);
       this.chatter.sendWelcomeMessage(playerCharacter);
     }
   }
 
-  private handleStressUpdate(message: ChatEventData, playerCharacter: PlayerCharacter) {
+  private handleStressUpdate(message: ChatEventData, stressedCharacter: StressedCharacter) {
     const amount = this.extractStressAmount(message.content);
 
     if (!amount) {
-      this.chatter.sendFeedback(playerCharacter.playerId, `Amount can only be numbers`)
+      this.chatter.sendFeedback(stressedCharacter.playerId, `Amount can only be numbers`);
       return;
     }
 
-    if(amount > 0) {
-      this.handleAddStress(amount, playerCharacter);
+    if (amount > 0) {
+      this.handleAddStress(amount, stressedCharacter);
     } else {
-      this.handleRemoveStress(amount, playerCharacter);
+      this.handleRemoveStress(amount, stressedCharacter);
     }
   }
 
-  private handlePerseverenceUpdate(message: ChatEventData, playerCharacter: PlayerCharacter) {
-    const uuid = this.extractPerseverenceUuid(message.content)
-    Logger.debug(`Removing perseverence: ${uuid}`)
-    this.stressProcessor.processPerseverenceRemoval(playerCharacter, uuid)
+  private handlePerseverenceUpdate(message: ChatEventData, stressedCharacter: StressedCharacter) {
+    const uuid = this.extractPerseverenceUuid(message.content);
+    this.stressProcessor.processPerseverenceRemoval(stressedCharacter, uuid);
   }
 
-  private handleAddStress(amountToAdd: number, playerCharacter: PlayerCharacter) {
+  private handleAddStress(amountToAdd: number, stressedCharacter: StressedCharacter) {
     this.stressProcessor.processStressGain({
-      ...playerCharacter,
+      ...stressedCharacter,
       amount: amountToAdd
     });
   }
 
-  private handleRemoveStress(amountToRemove: number, playerCharacter: PlayerCharacter) {
+  private handleRemoveStress(amountToRemove: number, stressedCharacter: StressedCharacter) {
     this.stressProcessor.processStressLoss({
-      ...playerCharacter,
+      ...stressedCharacter,
       amount: amountToRemove
     });
   }
@@ -119,26 +116,48 @@ export class StressCommandHandler {
       return +amount;
     }
 
-    Logger.error('Stress update command contained more than just numbers');
-    return undefined;
+    return;
   }
 
-  private extractPlayerCharacterFromMessage(message: ChatEventData): PlayerCharacter | undefined {
-    const apiChatEvent = (message as ApiChatEventData);
+  private extractPlayerCharacterFromMessage (
+    message: ChatEventData
+  ): PlayerCharacter | undefined {
+    const apiChatEvent = message as ApiChatEventData;
+    if (!apiChatEvent.selected || apiChatEvent.selected.length !== 1) {
+      this.chatter.sendFeedback(
+        message.playerid,
+        'Make sure to only select 1 token. And that token is associated with a character.'
+      );
+      return;
+    }
 
-    if(apiChatEvent.selected !== undefined && apiChatEvent.selected.length === 1) {
-      const character = Roll20Util.getCharacterFromTokenId(apiChatEvent.selected[0]._id);
+    const character = Roll20Util.getCharacterFromTokenId(apiChatEvent.selected[0]._id);
 
-      if(character !== undefined) {
-        const playerCharacter: PlayerCharacter = {
-          characterId: character.get('_id'),
-          playerId: message.playerid,
-          name: character.get('name')
-        }
+    // Make sure the token info is correct
+    if (!character) {
+      return;
+    }
 
-        return playerCharacter;
-      }
-    } 
-    return;
+    const playerCharacter: PlayerCharacter = {
+      characterId: character.get('_id'),
+      playerId: message.playerid,
+      name: character.get('name')
+    };
+
+    return playerCharacter;
+  }
+
+  private findStressedCharacterByPlayerCharacter(
+    playerCharacter: PlayerCharacter
+  ): StressedCharacter | undefined {
+    const stressedCharacter = this.stressStateManager.getStressedCharacter(playerCharacter);
+
+    // Make sure we have this character registered
+    if (!stressedCharacter) {
+      Logger.error(`Tried to add stress for unknown character: ${playerCharacter.name}`);
+      return;
+    }
+
+    return stressedCharacter;
   }
 }

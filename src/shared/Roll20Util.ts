@@ -1,28 +1,38 @@
 import { Logger } from './Logger';
 
+/**
+ * Roll20Util provides some often used helper functions for interface with Roll20
+ */
 export class Roll20Util {
   /**
-   * Update the attributes of a character for each stress. If the attribute does not yet exist
+   * Update the attributes of a character for a {@link StressItem}. If the attribute does not yet exist
    * (which happens when it's the default value) it is created.
    *
-   * @param stressedCharacter character to modify attributes for.
-   * @param stress {@link StressItem} list containg attributes to modify and by what amount.
+   * @param playerCharacter character to modify attributes for.
+   * @param stress item containing attributes to modify and by what amount.
    */
   static updateNumericalPropertiesWithValueFromStressItem(
-    stressedCharacter: StressedCharacter,
+    playerCharacter: PlayerCharacter,
     stress: StressItem
   ) {
     stress.targetAttributes.forEach(targetAttribute => {
       Roll20Util.updateNumericalPropertyWithValue(
-        stressedCharacter,
+        playerCharacter,
         targetAttribute,
         stress.attributeModifier
       );
     });
   }
 
+  /**
+   * Update the attributes of a character for each {@link PerseverenceItem}. If the attribute does not yet exist
+   * (which happens when it's the default value) it is created.
+   *
+   * @param playerCharacter character to modify attributes for.
+   * @param perseverence item containing attributes to modify and by what amount.
+   */
   static updateNumericalPropertiesWithValueFromPerseverenceItem(
-    stressedCharacter: StressedCharacter,
+    playerCharacter: PlayerCharacter,
     perseverence: PerseverenceItem
   ) {
     if(perseverence.targetAttributes === undefined || 
@@ -32,7 +42,7 @@ export class Roll20Util {
 
     perseverence.targetAttributes.forEach(targetAttribute => {
       Roll20Util.updateNumericalPropertyWithValue(
-        stressedCharacter,
+        playerCharacter,
         targetAttribute,
         perseverence.attributeModifier!! // For some reason linting doesn't recognize this as checked?
       );
@@ -80,6 +90,14 @@ export class Roll20Util {
     return character;
   }
 
+  /**
+   * Get a {@link Handout} on a player by its name. All handouts with this name are
+   * retrieved and then filtered down by playerId. If more than one handout still remain
+   * this function returns undefined.
+   * 
+   * @param handoutName name of the handout
+   * @param playerId player to get the handout for.
+   */
   static getHandoutOnPlayer(handoutName: string, playerId: string): Handout | undefined {
     let handouts = findObjs({
       _type: 'handout',
@@ -104,6 +122,12 @@ export class Roll20Util {
     return handouts.pop();
   }
 
+  /**
+   * Get a list of {@link Handout}s with a specific name. This is non player specific
+   * and returns all handouts found with this name.
+   * 
+   * @param handoutName name of the handout to find.
+   */
   static getHandoutsByName(handoutName: string): Handout[] | undefined {
     let handouts = findObjs({
       _type: 'handout',
@@ -117,6 +141,13 @@ export class Roll20Util {
     return handouts;
   }
 
+  /**
+   * Get an ability on a specified character by name. If more tha one ability with this name
+   * exists, or no ability can be found this function returns undefined.
+   * 
+   * @param abilityName name of the ability to get.
+   * @param characterId id of the character to get the ability from.
+   */
   static getAbilityOnCharacter(abilityName: string, characterId: string): Ability | undefined {
     const abilities = findObjs({
       _type: 'ability',
@@ -145,27 +176,27 @@ export class Roll20Util {
   }
 
   private static updateNumericalPropertyWithValue(
-    stressedCharacter: StressedCharacter,
+    playerCharacter: PlayerCharacter,
     attributeName: string,
     amount: number
   ) {
     const property = Roll20Util.findAttributeByNameAndCharacterId(
       attributeName,
-      stressedCharacter.characterId
+      playerCharacter.characterId
     );
 
     if (!property) {
       Logger.error(
-        `Could not find property with name ${attributeName} on character ${stressedCharacter.name}, creating...`
+        `Could not find property with name ${attributeName} on character ${playerCharacter.name}, creating...`
       );
-      Roll20Util.createPropertyWithValueZeroOnCharacter(stressedCharacter, attributeName);
+      Roll20Util.createPropertyWithValueZeroOnCharacter(playerCharacter, attributeName);
       // Recursion woooo~
-      Roll20Util.updateNumericalPropertyWithValue(stressedCharacter, attributeName, amount);
+      Roll20Util.updateNumericalPropertyWithValue(playerCharacter, attributeName, amount);
       return;
     }
 
     Logger.info(
-      `Modifying property ${attributeName} on character ${stressedCharacter.name} with value ${amount}`
+      `Modifying property ${attributeName} on character ${playerCharacter.name} with value ${amount}`
     );
 
     const current = +property.get('current');
@@ -173,11 +204,11 @@ export class Roll20Util {
   }
 
   private static createPropertyWithValueZeroOnCharacter(
-    stressedCharacter: StressedCharacter,
+    playerCharacter: PlayerCharacter,
     attributeName: string
   ) {
     const attribute: AttributeCreationProperties = {
-      _characterid: stressedCharacter.characterId,
+      _characterid: playerCharacter.characterId,
       current: '0',
       name: attributeName
     };

@@ -3,6 +3,13 @@ import { ObjectHelper } from '../../shared/ObjectHelper';
 import { perseverences } from './StressPerseverenceItems';
 import { Logger } from '../../shared/Logger';
 
+/**
+ * StressItemManager is a utility class for getting {@link StressItem}s and
+ * {@link PerseverenceItem}s. 
+ * 
+ * Because different items have different weights a rolltable is build from all 
+ * available items, accounting for different weights, which is then rolled against.
+ */
 export class StressItemManager {
   rollTableTotal: ItemBase[] = [];
   rollTableStress: StressItem[] = [];
@@ -21,38 +28,30 @@ export class StressItemManager {
       'perseverence'
     );
   }
-
+  
   /**
-   * Return an array of a set amount of randomly selected {@link PerseverenceItem} from the available list.
-   *
-   * @param amount Number of PerseverenceItems to return
+   * Returns a randomly selected {@link StressItem} from the available rolltable.
    */
-  getRandomPerseverences(amount: number): PerseverenceItem[] {
-    const newPerseverences = []
-
-    for (let index = 0; index < amount; index++) {
-      let perseverence = this.getRandomPerseverence();
-      perseverence.uuid = this.randomUuid()
-      newPerseverences.push(perseverence);
-    }
-
-    return newPerseverences;
+  getRandomStress(): StressItem {
+    // Have to make deep copies to make sure we're not constantly referencing the same obj.
+    return ObjectHelper.deepCopy<StressItem>(
+      this.rollTableStress[this.getRandomNumberForSize(this.rollTableStress.length)]
+    );
   }
 
   /**
-   * Return an array of a set amount of randomly selected {@link StressItem} from the available list.
-   *
-   * @param amount Number of StressItems to return
+   * Returns a randomly selected {@link PerseverenceItem} from the available rolltable.
+   * 
+   * A UUID is added to the item, in order for it to be removable later without worrying about
+   * removing duplicates.
    */
-  getRandomStresses(amount: number): StressItem[] {
-    const newStresses = [];
-
-    for (let index = 0; index < amount; index++) {
-      let stress = this.getRandomStress();
-      newStresses.push(stress);
-    }
-
-    return newStresses;
+  getRandomPerseverence(): PerseverenceItem {
+    // Have to make deep copies to make sure we're not constantly referencing the same obj.
+    const perseverence: PerseverenceItem = ObjectHelper.deepCopy<PerseverenceItem>(
+      this.rollTablePerseverence[this.getRandomNumberForSize(this.rollTablePerseverence.length)]
+    );
+    perseverence.uuid = this.randomUuid()
+    return perseverence;
   }
 
   private buildRollTable() {
@@ -74,22 +73,9 @@ export class StressItemManager {
     Logger.debug(`Roll table size: ${this.rollTableTotal.length}`);
   }
 
-  private getRandomStress(): StressItem {
-    // Have to make deep copies to make sure we're not constantly referencing the same obj.
-    return ObjectHelper.deepCopy<StressItem>(
-      this.rollTableStress[this.getRandomNumberForSize(this.rollTableStress.length)]
-    );
-  }
-
-  private getRandomPerseverence(): PerseverenceItem {
-    // Have to make deep copies to make sure we're not constantly referencing the same obj.
-    return ObjectHelper.deepCopy<PerseverenceItem>(
-      this.rollTablePerseverence[this.getRandomNumberForSize(this.rollTablePerseverence.length)]
-    );
-  }
 
   private getRandomNumberForSize(size: number) {
-    return Math.floor(Math.random() * size);
+    return randomInteger(size) - 1
   }
 
   private randomUuid(): string {

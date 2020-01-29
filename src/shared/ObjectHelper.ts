@@ -30,6 +30,11 @@ export class ObjectHelper {
     return target;
   };
 
+  /**
+   * 
+   * 
+   * @param array 
+   */
   public static hasDuplicates(array: ItemBase[]) {
     var valuesSoFar = Object.create(null);
 

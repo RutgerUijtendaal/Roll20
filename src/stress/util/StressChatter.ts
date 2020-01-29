@@ -8,8 +8,9 @@ export class StressChatter extends Chatter {
     'An ability has been added to your token to control your stress. ' +
     'You can find it wherever you have your ability buttons when you select your token';
   instructionTwo =
-    "A handout have been assigned to you. It holds 2 lists: 1. your Stress list, I'll update that one. " +
-    "2. A Perseverence list. I add new Perseverence gained to this, but it's up to you to remove them.";
+    "A handout have been assigned to you. It holds 2 lists."
+  instructionThree = "1. Your Stress list, I'll keep this one up to date.";
+  instructionFour = "2. A Perseverence list. I add new Perseverence gained to this, but it's up to you to remove them."
 
   // TODO build these messages based on multiple attributes
   attributeStressBase =
@@ -28,7 +29,7 @@ export class StressChatter extends Chatter {
     '{{Additional effect = {3} }}' +
     '{{Stress level= {4} }}';
 
-  perseverenceBase = 
+  perseverenceBase =
     '&{template:default}' +
     '{{name=Perseverence for {0} }}' +
     '{{Type= {1} }}' +
@@ -49,20 +50,22 @@ export class StressChatter extends Chatter {
       Roll20Util.getPlayerDisplayNameById(playerCharacter.playerId),
       this.instructionTwo
     );
-  }
-
-  sendStressGainedWhisper(stressUpdate: StressUpdate) {
     this.sendBotWhisper(
-      Roll20Util.getPlayerDisplayNameById(stressUpdate.playerId),
-      `Gained ${stressUpdate.amount} stress`
+      Roll20Util.getPlayerDisplayNameById(playerCharacter.playerId),
+      this.instructionThree
+    );
+    this.sendBotWhisper(
+      Roll20Util.getPlayerDisplayNameById(playerCharacter.playerId),
+      this.instructionFour
     );
   }
 
-  sendStressLostWhisper(stressUpdate: StressUpdate) {
-    this.sendBotWhisper(
-      Roll20Util.getPlayerDisplayNameById(stressUpdate.playerId),
-      `Lost ${stressUpdate.amount} stress`
-    );
+  sendStressChangedMessage(stressUpdate: StressUpdate) {
+    if (stressUpdate.amount >= 0) {
+      this.sendStressGainedWhisper(stressUpdate);
+    } else {
+      this.sendStressLostWhisper(stressUpdate);
+    }
   }
 
   sendDoubleStressDebuffGainedMessage(stressedCharacter: StressedCharacter, stress: StressItem) {
@@ -81,12 +84,32 @@ export class StressChatter extends Chatter {
     this.sendStressMessage(stressedCharacter, stress, 'Lost');
   }
 
-  sendPerseverenceGainedMessage(stressedCharacter: StressedCharacter, perseverence: PerseverenceItem) {
-    this.sendPerseverenceMessage(stressedCharacter, perseverence, 'Gained')
+  sendPerseverenceGainedMessage(
+    stressedCharacter: StressedCharacter,
+    perseverence: PerseverenceItem
+  ) {
+    this.sendPerseverenceMessage(stressedCharacter, perseverence, 'Gained');
   }
 
-  sendPerseverenceLostMessage(stressedCharacter: StressedCharacter, perseverence: PerseverenceItem) {
-    this.sendPerseverenceMessage(stressedCharacter, perseverence, 'Lost')
+  sendPerseverenceLostMessage(
+    stressedCharacter: StressedCharacter,
+    perseverence: PerseverenceItem
+  ) {
+    this.sendPerseverenceMessage(stressedCharacter, perseverence, 'Lost');
+  }
+
+  private sendStressGainedWhisper(stressUpdate: StressUpdate) {
+    this.sendBotWhisper(
+      Roll20Util.getPlayerDisplayNameById(stressUpdate.playerId),
+      `Gained ${stressUpdate.amount} stress`
+    );
+  }
+
+  private sendStressLostWhisper(stressUpdate: StressUpdate) {
+    this.sendBotWhisper(
+      Roll20Util.getPlayerDisplayNameById(stressUpdate.playerId),
+      `Lost ${stressUpdate.amount} stress`
+    );
   }
 
   private sendPerseverenceMessage(
@@ -101,7 +124,7 @@ export class StressChatter extends Chatter {
       perseverence.name,
       perseverence.desc,
       '' + stressedCharacter.stressValue
-    )
+    );
 
     this.sendBotAnnouncement(message);
   }

@@ -5,7 +5,6 @@ export class StressFileWriter {
   handoutName = 'Stress for {0}';
 
   // Util
-  emptyLine = '<p><br></p>';
   horizontalLine = '<hr>';
   // Generic
   currentStress = 'Current stress: {0}';
@@ -20,13 +19,19 @@ export class StressFileWriter {
   perseverenceStart = '<h3>Your perseverence list</h3>';
   perseverenceSubStart = '<h5>Click on the button to remove a used perseverence</h5>';
   emptyPerseverenceList = 'No perseverence buffs active.';
-  listItemWithDesc = '<li>{0}: {1} -- <a href="!&#13!perseverence {2}">Consumed</a></li>';
+  listItemWithDesc = '<li>{0}: {1} -- <a href="!&#13!perseverence {2}">Consume</a></li>';
 
+  /**
+   * Create a blank note for a newly registered {@link PlayerCharacter}. 
+   * 
+   * @param playerCharacter Character to create the note for. The PlayerId from this is used, as all
+   * handouts have to be associated with a player.
+   */
   createEmptyStressNote(playerCharacter: PlayerCharacter) {
     const handoutName = this.stringFormat(this.handoutName, playerCharacter.name);
 
     if (this.isHandoutPresent(playerCharacter, handoutName)) {
-      Logger.debug(`Handout Ability already present on player ${playerCharacter.playerId}`);
+      Logger.debug(`Handout Ability already present.`);
       return;
     }
 
@@ -44,6 +49,16 @@ export class StressFileWriter {
     });
   }
 
+  /**
+   * Update the name in the title of note. Gets all notes with oldName and updates them to 
+   * include the newName.
+   * 
+   * This updates the title of **every** Handout that includes the StressedCharacters name and isn't
+   * limited to a single player
+   * 
+   * @param oldName name currently on the note title.
+   * @param newName name to set the note title to.
+   */
   updateStressNoteName(oldName: string, newName: string) {
     const handoutName = this.stringFormat(this.handoutName, oldName);
 
@@ -56,6 +71,15 @@ export class StressFileWriter {
     }
   }
 
+  /**
+   * Update the note of Handouts to reflect changes in a StressedCharacters list of stresses
+   * and perseverences. Simply rebuilds the entire note. 
+   * 
+   * This updates the note of **every** Handout that includes the StressedCharacters name and isn't
+   * limited to a single player.
+   * 
+   * @param stressedCharacter character to update the note for.
+   */
   updateStressNoteForStressedCharacter(stressedCharacter: StressedCharacter) {
     const handoutName = this.stringFormat(this.handoutName, stressedCharacter.name);
 

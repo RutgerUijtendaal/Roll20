@@ -3,7 +3,8 @@ import { stresses } from '../../../src/stress/items/StressItems';
 import { assert } from 'chai';
 import { ObjectHelper } from '../../../src/shared/ObjectHelper';
 
-@suite
+@suite 
+// @ts-ignore
 class StressItemsTest {
 
   @test

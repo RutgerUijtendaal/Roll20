@@ -1,7 +1,11 @@
 import { Logger } from '../../shared/Logger';
 import { environment } from '../../env';
-import { StressAbilityCreator } from '../util/StressAbilityCreator';
 
+/**
+ * StressStateManager handles persisting Stress data. 
+ * 
+ * An array of {@link StressedCharacter}s is persisted and can be queried against. 
+ */
 export class StressStateManager {
   constructor() {
     Logger.info('Initialize StressManager');
@@ -18,6 +22,9 @@ export class StressStateManager {
     }
   }
 
+  /**
+   * Returns the state object.
+   */
   getState(): StressState {
     return state.StressNS;
   }

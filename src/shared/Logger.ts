@@ -1,5 +1,9 @@
 import { logLevel } from '../env';
 
+/**
+ * Logger is a simple static class that expands on the existing Roll20 lost system
+ * to allow for different levels of logging.
+ */
 export class Logger {
   static debug(message: string) {
     if (logLevel === 'debug') {
