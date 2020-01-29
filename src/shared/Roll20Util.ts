@@ -8,7 +8,7 @@ export class Roll20Util {
    * @param stressedCharacter character to modify attributes for.
    * @param stress {@link StressItem} list containg attributes to modify and by what amount.
    */
-  static updateNumericalPropertiesWithValue(
+  static updateNumericalPropertiesWithValueFromStressItem(
     stressedCharacter: StressedCharacter,
     stress: StressItem
   ) {
@@ -17,6 +17,24 @@ export class Roll20Util {
         stressedCharacter,
         targetAttribute,
         stress.attributeModifier
+      );
+    });
+  }
+
+  static updateNumericalPropertiesWithValueFromPerseverenceItem(
+    stressedCharacter: StressedCharacter,
+    perseverence: PerseverenceItem
+  ) {
+    if(perseverence.targetAttributes === undefined || 
+      perseverence.attributeModifier === undefined) {
+      return;
+    }
+
+    perseverence.targetAttributes.forEach(targetAttribute => {
+      Roll20Util.updateNumericalPropertyWithValue(
+        stressedCharacter,
+        targetAttribute,
+        perseverence.attributeModifier!! // For some reason linting doesn't recognize this as checked?
       );
     });
   }

@@ -30,7 +30,7 @@ export class ObjectHelper {
     return target;
   };
 
-  public static hasDuplicates(array: StressItemBase[]) {
+  public static hasDuplicates(array: ItemBase[]) {
     var valuesSoFar = Object.create(null);
 
     for (var i = 0; i < array.length; ++i) {

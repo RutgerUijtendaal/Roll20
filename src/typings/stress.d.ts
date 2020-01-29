@@ -9,23 +9,33 @@ interface PlayerCharacter {
 interface StressedCharacter extends PlayerCharacter {
   stressValue: number;
   stresses : StressItem[]
+  perseverences: PerseverenceItem[]
 }
 
 interface StressUpdate extends PlayerCharacter {
   amount: number;
 }
 
-interface StressItemBase {
+interface ItemBase {
   id: number;
   type: StressType;
   name: string;
   weight: number;
+}
+
+interface StressItem extends ItemBase {
+  type: 'debuff'
+  mixin?: StressItem;
   targetAttributes: string[];
   attributeModifier: number;
 }
 
-interface StressItem extends StressItemBase {
-  mixin?: StressItemBase;
+interface PerseverenceItem extends ItemBase {
+  type: 'perseverence';
+  uuid?: string;
+  desc: string;
+  targetAttributes?: string[];
+  attributeModifier?: number;
 }
 
 interface StressState {

@@ -8,14 +8,14 @@ export class StressChatter extends Chatter {
     'An ability has been added to your token to control your stress. ' +
     'You can find it wherever you have your ability buttons when you select your token';
   instructionTwo =
-    "2 Notes have been assigned to you. One holds your Stress list. I'll update that one. " +
-    "The other one is for Perseverence buffs. I add new Perseverence gained to this, but it's up to you to remove them.";
+    "A handout have been assigned to you. It holds 2 lists: 1. your Stress list, I'll update that one. " +
+    "2. A Perseverence list. I add new Perseverence gained to this, but it's up to you to remove them.";
 
   // TODO build these messages based on multiple attributes
   attributeStressBase =
     '&{template:default}' +
     '{{name=Stress for {0} }}' +
-    '{{Type={1} }}' +
+    '{{Type= {1} }}' +
     '{{Effect= {2} }}' +
     '{{Stress level= {3} }}';
 
@@ -23,9 +23,17 @@ export class StressChatter extends Chatter {
   doubleAttributeStressBase =
     '&{template:default}' +
     '{{name=Double Stress for {0} }}' +
-    '{{Type={1} }}' +
+    '{{Type= {1} }}' +
     '{{Old effect = {2} }}' +
     '{{Additional effect = {3} }}' +
+    '{{Stress level= {4} }}';
+
+  perseverenceBase = 
+    '&{template:default}' +
+    '{{name=Perseverence for {0} }}' +
+    '{{Type= {1} }}' +
+    '{{Effect= {2} }}' +
+    '{{Description= {3} }}' +
     '{{Stress level= {4} }}';
 
   sendWelcomeMessage(playerCharacter: PlayerCharacter) {
@@ -73,12 +81,37 @@ export class StressChatter extends Chatter {
     this.sendStressMessage(stressedCharacter, stress, 'Lost');
   }
 
+  sendPerseverenceGainedMessage(stressedCharacter: StressedCharacter, perseverence: PerseverenceItem) {
+    this.sendPerseverenceMessage(stressedCharacter, perseverence, 'Gained')
+  }
+
+  sendPerseverenceLostMessage(stressedCharacter: StressedCharacter, perseverence: PerseverenceItem) {
+    this.sendPerseverenceMessage(stressedCharacter, perseverence, 'Lost')
+  }
+
+  private sendPerseverenceMessage(
+    stressedCharacter: StressedCharacter,
+    perseverence: PerseverenceItem,
+    type: string
+  ) {
+    const message = this.stringFormat(
+      this.perseverenceBase,
+      stressedCharacter.name,
+      type,
+      perseverence.name,
+      perseverence.desc,
+      '' + stressedCharacter.stressValue
+    )
+
+    this.sendBotAnnouncement(message);
+  }
+
   private sendStressMessage(
     stressedCharacter: StressedCharacter,
     stress: StressItem,
     type: string
   ) {
-    let message = this.stringFormat(
+    const message = this.stringFormat(
       this.attributeStressBase,
       stressedCharacter.name,
       type,
@@ -101,7 +134,7 @@ export class StressChatter extends Chatter {
       return;
     }
 
-    let message = this.stringFormat(
+    const message = this.stringFormat(
       this.doubleAttributeStressBase,
       stressedCharacter.name,
       type,

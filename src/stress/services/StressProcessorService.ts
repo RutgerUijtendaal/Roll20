@@ -5,26 +5,35 @@ import { stressModifier } from '../../env';
 import { StressAdditionService } from './StressAdditionService';
 import { StressRemovalService } from './StressRemovalService';
 import { StressFileWriter } from '../util/StressFileWriter';
+import { StressItemManager } from '../items/StressItemManager';
+import { StressPerseverenceService } from './StressPerseverenceService';
 
 export class StressProcessorService {
   stressModifier = stressModifier || 5;
   stressStateManager: StressStateManager;
   stressAdditionService: StressAdditionService;
   stressRemovalService: StressRemovalService;
+  stressPerseverenceService: StressPerseverenceService;
   stressFileWriter: StressFileWriter;
+  stressItemManager: StressItemManager;
   chatter: StressChatter;
 
   constructor(
     stressStateManager: StressStateManager,
-    stressAdditionService: StressAdditionService,
-    stressRemovalService: StressRemovalService,
     stressFileWriter: StressFileWriter,
+    stressItemManager: StressItemManager,
     chatter: StressChatter
   ) {
     this.stressStateManager = stressStateManager;
-    this.stressAdditionService = stressAdditionService;
-    this.stressRemovalService = stressRemovalService;
+    this.stressItemManager = stressItemManager;
     this.stressFileWriter = stressFileWriter;
+    this.stressAdditionService = new StressAdditionService(stressItemManager, chatter);
+    this.stressRemovalService = new StressRemovalService(stressItemManager, chatter);
+    this.stressPerseverenceService = new StressPerseverenceService(
+      stressItemManager,
+      this,
+      chatter
+    );
     this.chatter = chatter;
   }
 
@@ -34,21 +43,32 @@ export class StressProcessorService {
    *
    * @param stressUpdate obj containing who to update stress for and by what amount.
    */
-  processStressAddition(stressUpdate: StressUpdate) {
-    let stressCharacter = this.stressStateManager.getStressedCharacter(stressUpdate);
+  processStressGain(stressUpdate: StressUpdate) {
+    let stressedCharacter = this.stressStateManager.getStressedCharacter(stressUpdate);
 
-    if (stressCharacter === undefined) {
+    if (stressedCharacter === undefined) {
       Logger.error(`Tried to add stress for unknown character: ${stressUpdate.name}`);
       return;
     }
 
-    const diff = this.getStressStepDifference(stressCharacter, stressUpdate);
-    stressCharacter = this.updateStressAmount(stressCharacter, stressUpdate);
-    stressCharacter = this.stressAdditionService.addStresses(stressCharacter, diff);
+    const diff = this.getStressStepDifference(stressedCharacter, stressUpdate);
+    stressedCharacter = this.updateStressAmount(stressedCharacter, stressUpdate);
 
+    for (let index = 0; index < diff; index++) {
+      if (this.stressItemManager.isPerseverence()) {
+        stressedCharacter = this.stressPerseverenceService.addPerseverenceItem(stressedCharacter);
+        stressedCharacter = this.updateStressAmount(stressedCharacter, {
+          ...stressedCharacter,
+          amount: -5
+        })
+      } else {
+        stressedCharacter = this.stressAdditionService.addStressItem(stressedCharacter);
+      }
+    }
+    
+    this.stressStateManager.updateStressedCharacter(stressedCharacter);
     this.chatter.sendStressGainedWhisper(stressUpdate);
-    this.stressStateManager.updateStressedCharacter(stressCharacter);
-    this.stressFileWriter.updateStressNoteForStressedCharacter(stressCharacter);
+    this.stressFileWriter.updateStressNoteForStressedCharacter(stressedCharacter);
   }
 
   /**
@@ -57,27 +77,40 @@ export class StressProcessorService {
    *
    * @param stressUpdate obj containing who to update stress for and by what amount.
    */
-  processStressRemoval(stressUpdate: StressUpdate) {
-    let stressCharacter = this.stressStateManager.getStressedCharacter(stressUpdate);
+  processStressLoss(stressUpdate: StressUpdate) {
+    let stressedCharacter = this.stressStateManager.getStressedCharacter(stressUpdate);
 
-    if (stressCharacter === undefined) {
+    if (stressedCharacter === undefined) {
       Logger.error(`Tried to add stress for unknown character: ${stressUpdate.name}`);
       return;
     }
 
     // If stress is already 0 we don't have to do anything
-    if (stressCharacter.stressValue === 0) {
+    if (stressedCharacter.stressValue === 0) {
       return;
     }
 
-    const diff = this.getStressStepDifference(stressCharacter, stressUpdate);
+    const diff = this.getStressStepDifference(stressedCharacter, stressUpdate);
 
-    stressCharacter = this.updateStressAmount(stressCharacter, stressUpdate);
-    stressCharacter = this.stressRemovalService.removeStresses(stressCharacter, diff);
+    stressedCharacter = this.updateStressAmount(stressedCharacter, stressUpdate);
+    stressedCharacter = this.stressRemovalService.removeStressItem(stressedCharacter, diff);
 
     this.chatter.sendStressLostWhisper(stressUpdate);
-    this.stressStateManager.updateStressedCharacter(stressCharacter);
-    this.stressFileWriter.updateStressNoteForStressedCharacter(stressCharacter);
+    this.stressStateManager.updateStressedCharacter(stressedCharacter);
+    this.stressFileWriter.updateStressNoteForStressedCharacter(stressedCharacter);
+  }
+
+  processPerseverenceRemoval(playerCharacter: PlayerCharacter, uuid: string) {
+    let stressedCharacter = this.stressStateManager.getStressedCharacter(playerCharacter);
+
+    if (stressedCharacter === undefined) {
+      Logger.error(`Tried to add stress for unknown character: ${playerCharacter.name}`);
+      return;
+    }
+
+    stressedCharacter = this.stressPerseverenceService.removePerseverenceItem(stressedCharacter, uuid);
+    this.stressStateManager.updateStressedCharacter(stressedCharacter);
+    this.stressFileWriter.updateStressNoteForStressedCharacter(stressedCharacter);
   }
 
   private updateStressAmount(

@@ -56,6 +56,10 @@ export class StressCommandHandler {
     if (message.content.indexOf('!+-stress') !== -1) {
       this.handleStressUpdate(message, playerCharacter);
     }
+
+    if (message.content.indexOf('!perseverence') !== -1) {
+      this.handlePerseverenceUpdate(message, playerCharacter);
+    }
   }
 
   private handleNewStressCharacter(message: ChatEventData, playerCharacter: PlayerCharacter) {
@@ -83,19 +87,28 @@ export class StressCommandHandler {
     }
   }
 
+  private handlePerseverenceUpdate(message: ChatEventData, playerCharacter: PlayerCharacter) {
+    const uuid = this.extractPerseverenceUuid(message.content)
+    Logger.debug(`Removing perseverence: ${uuid}`)
+    this.stressProcessor.processPerseverenceRemoval(playerCharacter, uuid)
+  }
 
   private handleAddStress(amountToAdd: number, playerCharacter: PlayerCharacter) {
-    this.stressProcessor.processStressAddition({
+    this.stressProcessor.processStressGain({
       ...playerCharacter,
       amount: amountToAdd
     });
   }
 
   private handleRemoveStress(amountToRemove: number, playerCharacter: PlayerCharacter) {
-    this.stressProcessor.processStressRemoval({
+    this.stressProcessor.processStressLoss({
       ...playerCharacter,
       amount: amountToRemove
     });
+  }
+
+  private extractPerseverenceUuid(message: string): string {
+    return message.substr(message.indexOf(' ') + 1);
   }
 
   private extractStressAmount(message: string): number | undefined {
@@ -123,7 +136,6 @@ export class StressCommandHandler {
           name: character.get('name')
         }
 
-        Logger.debug(`name: ${playerCharacter.name}, id: ${playerCharacter.characterId}`)
         return playerCharacter;
       }
     } 

@@ -25,7 +25,7 @@ export class StressRemovalService {
    * @param stressedCharacter character to remove stresses from
    * @param count amount of stresses to remove
    */
-  removeStresses(stressedCharacter: StressedCharacter, count: number): StressedCharacter {
+  removeStressItem(stressedCharacter: StressedCharacter, count: number): StressedCharacter {
     Logger.info(`Removing ${count} stresses from ${stressedCharacter.name}`);
 
     for (let index = 0; index < count; index++) {
@@ -64,8 +64,8 @@ export class StressRemovalService {
     this.chatter.sendStressDebuffLostMessage(stressedCharacter, stress);
   }
 
-  private undoStress(stressedCharacter: StressedCharacter, stress: StressItemBase) {
+  private undoStress(stressedCharacter: StressedCharacter, stress: StressItem) {
     stress.attributeModifier = stress.attributeModifier * -1
-    Roll20Util.updateNumericalPropertiesWithValue(stressedCharacter, stress);
+    Roll20Util.updateNumericalPropertiesWithValueFromStressItem(stressedCharacter, stress);
   }
 }

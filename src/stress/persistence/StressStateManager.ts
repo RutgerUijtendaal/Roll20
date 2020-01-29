@@ -37,7 +37,8 @@ export class StressStateManager {
     const stressedCharacter: StressedCharacter = {
       ...playerCharacter,
       stressValue: 0,
-      stresses: []
+      stresses: [],
+      perseverences: []
     };
 
     state.StressNS.characters.push(stressedCharacter);
