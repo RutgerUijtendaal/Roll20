@@ -7,35 +7,43 @@ export class StressChatter extends Chatter {
   instructionOne =
     'An ability has been added to your token to control your stress. ' +
     'You can find it wherever you have your ability buttons when you select your token';
-  instructionTwo =
-    "A handout have been assigned to you. It holds 2 lists."
+  instructionTwo = 'A handout has been assigned to you. It holds 2 lists.';
   instructionThree = "1. Your Stress list, I'll keep this one up to date.";
-  instructionFour = "2. A Perseverence list. I add new Perseverence gained to this, but it's up to you to remove them."
+  instructionFour =
+    "2. A Perseverence list. I add new Perseverence gained to this, but it's up to you to remove them.";
 
   // TODO build these messages based on multiple attributes
+  colorMessageRed = '{{save=1}}';
+  colorMessageGreen = '{{weapon=1}}';
+  colorMessageBlue = '{{ability=1}}';
+  colorMessagePurple = '{{spell=1}}';
+
+  attributeDisplay = '{{{0} = @{{1}|{2}} {0} }}';
+
   attributeStressBase =
-    '&{template:default}' +
-    '{{name=Stress for {0} }}' +
-    '{{Type= {1} }}' +
+    '&{template:5eDefault}' +
+    '{{showclassactions=1}}' +
+    '{{title=Stress {0}}}' +
+    '{{subheader= {1} }}' +
     '{{Effect= {2} }}' +
-    '{{Stress level= {3} }}';
+    '{{=Updated values}}';
 
-  // TODO build these messages based on multiple attributes
   doubleAttributeStressBase =
-    '&{template:default}' +
-    '{{name=Double Stress for {0} }}' +
-    '{{Type= {1} }}' +
-    '{{Old effect = {2} }}' +
-    '{{Additional effect = {3} }}' +
-    '{{Stress level= {4} }}';
+    '&{template:5eDefault}' +
+    '{{showclassactions=1}}' +
+    '{{title=Double Stress {0}}}' +
+    '{{subheader= {1} }}' +
+    '{{Effect #1 = {2} }}' +
+    '{{Effect #2 = {3} }}' +
+    '{{=Updated Values}}';
 
   perseverenceBase =
-    '&{template:default}' +
-    '{{name=Perseverence for {0} }}' +
-    '{{Type= {1} }}' +
-    '{{Effect= {2} }}' +
-    '{{Description= {3} }}' +
-    '{{Stress level= {4} }}';
+    '&{template:5eDefault}' +
+    '{{showclassactions=1}}' +
+    '{{title=Perseverence {0} }}' +
+    '{{subheader= {1} }}' +
+    '{{Effect= {3} }}' +
+    '{{Description= {4} }}';
 
   sendWelcomeMessage(playerCharacter: PlayerCharacter) {
     this.sendBotWhisper(
@@ -61,6 +69,7 @@ export class StressChatter extends Chatter {
   }
 
   sendStressChangedMessage(stressUpdate: StressUpdate) {
+    stressUpdate.amount = stressUpdate.stressValue - stressUpdate.oldStressValue;
     if (stressUpdate.amount >= 0) {
       this.sendStressGainedWhisper(stressUpdate);
     } else {
@@ -101,30 +110,36 @@ export class StressChatter extends Chatter {
   private sendStressGainedWhisper(stressUpdate: StressUpdate) {
     this.sendBotWhisper(
       Roll20Util.getPlayerDisplayNameById(stressUpdate.playerId),
-      `Gained ${stressUpdate.amount} stress`
+      `Gained ${stressUpdate.amount} stress. You're now on ${stressUpdate.stressValue} total stress.`
     );
   }
 
   private sendStressLostWhisper(stressUpdate: StressUpdate) {
     this.sendBotWhisper(
       Roll20Util.getPlayerDisplayNameById(stressUpdate.playerId),
-      `Lost ${stressUpdate.amount} stress`
+      `Lost ${stressUpdate.amount} stress. You're now on ${stressUpdate.stressValue} total stress.`
     );
   }
 
   private sendPerseverenceMessage(
     stressedCharacter: StressedCharacter,
     perseverence: PerseverenceItem,
-    type: string
+    type: StressMessageType
   ) {
-    const message = this.stringFormat(
+    let message = this.stringFormat(
       this.perseverenceBase,
-      stressedCharacter.name,
       type,
+      stressedCharacter.name,
+      '' + stressedCharacter.stressValue,
       perseverence.name,
-      perseverence.desc,
-      '' + stressedCharacter.stressValue
+      perseverence.desc
     );
+
+    if(type === 'Gained') {
+      message += this.colorMessagePurple
+    } else {
+      message += this.colorMessageBlue
+    }
 
     this.sendBotAnnouncement(message);
   }
@@ -132,15 +147,29 @@ export class StressChatter extends Chatter {
   private sendStressMessage(
     stressedCharacter: StressedCharacter,
     stress: StressItem,
-    type: string
+    type: StressMessageType
   ) {
-    const message = this.stringFormat(
+    let message = this.stringFormat(
       this.attributeStressBase,
-      stressedCharacter.name,
       type,
-      stress.name,
-      '' + stressedCharacter.stressValue
+      stressedCharacter.name,
+      stress.name
     );
+
+    if(type === 'Gained') {
+      message += this.colorMessageRed
+    } else {
+      message += this.colorMessageGreen
+    }
+
+    stress.targetAttributes.forEach(targetAttribute => {
+      message += this.stringFormat(
+        this.attributeDisplay,
+        targetAttribute.name,
+        stressedCharacter.name,
+        targetAttribute.target
+      );
+    });
 
     this.sendBotAnnouncement(message);
   }
@@ -148,7 +177,7 @@ export class StressChatter extends Chatter {
   private sendDoubleStressMessage(
     stressedCharacter: StressedCharacter,
     stress: StressItem,
-    type: string
+    type: StressMessageType
   ) {
     if (!stress.mixin) {
       Logger.error(
@@ -157,14 +186,29 @@ export class StressChatter extends Chatter {
       return;
     }
 
-    const message = this.stringFormat(
+    let message = this.stringFormat(
       this.doubleAttributeStressBase,
-      stressedCharacter.name,
       type,
+      stressedCharacter.name,
       stress.name,
-      stress.mixin.name,
-      '' + stressedCharacter.stressValue
+      stress.mixin.name
     );
+
+    if(type === 'Gained') {
+      message += this.colorMessageRed
+    } else {
+      message += this.colorMessageGreen
+    }
+
+    stress.mixin.targetAttributes.forEach(targetAttribute => {
+      message += this.stringFormat(
+        this.attributeDisplay,
+        targetAttribute.name,
+        stressedCharacter.name,
+        targetAttribute.target
+      );
+    });
+
 
     this.sendBotAnnouncement(message);
   }

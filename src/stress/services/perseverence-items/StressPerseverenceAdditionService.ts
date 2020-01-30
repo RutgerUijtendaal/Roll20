@@ -2,6 +2,7 @@ import { StressItemManager } from '../../items/StressItemManager';
 import { StressChatter } from '../../util/StressChatter';
 import { Roll20Util } from '../../../shared/Roll20Util';
 import { StressProcessorService } from '../StressProcessorService';
+import { Logger } from '../../../shared/Logger';
 
 /**
  * StressPerseverenceAdditionService handles adding new {@link PerseverenceItems}
@@ -49,15 +50,7 @@ export class StressPerseverenceAdditionService {
   ): StressUpdate {
     switch (perseverence.id) {
       case 1: // Relax
-        this.stressProcessorService.processStressLoss(
-          {
-            ...stressUpdate,
-            amount: -30
-          },
-          true
-        );
-        stressUpdate.amount -= 30;
-        stressUpdate.stressValue = Math.max(stressUpdate.stressValue - 30, 0);
+        stressUpdate.perseverences.push(perseverence);
         break;
       case 2: // Not Today
         stressUpdate.perseverences.push(perseverence);

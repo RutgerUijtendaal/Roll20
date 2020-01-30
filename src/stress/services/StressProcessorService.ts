@@ -1,5 +1,4 @@
 import { StressStateManager } from '../persistence/StressStateManager';
-import { Logger } from '../../shared/Logger';
 import { StressChatter } from '../util/StressChatter';
 import { stressModifier } from '../../env';
 import { StressAdditionService } from './stress-items/StressAdditionService';
@@ -8,6 +7,7 @@ import { StressFileWriter } from '../util/StressFileWriter';
 import { StressItemManager } from '../items/StressItemManager';
 import { StressPerseverenceRemovalService } from './perseverence-items/StressPerseverenceRemovalService';
 import { StressPerseverenceAdditionService } from './perseverence-items/StressPerseverenceAdditionService';
+import { ObjectHelper } from '../../shared/ObjectHelper';
 
 /**
  * StressProcessorService is the entry point for handling new {@link StressUpdate}s.
@@ -59,12 +59,11 @@ export class StressProcessorService {
    * @param stressUpdate obj containing who to update stress for and by what amount.
    */
   processStressGain(stressUpdate: StressUpdate): StressUpdate {
-    for (let index = 0; index < stressUpdate.amount; index++) {
+    for (let index = 0; index < ObjectHelper.deepCopy(stressUpdate).amount; index++) {
       stressUpdate.stressValue += 1;
       if(stressUpdate.stressValue % stressModifier === 0) {
         if (this.stressItemManager.isPerseverence()) {
           stressUpdate.stressValue -= 5;
-          stressUpdate.amount -= 5;
           stressUpdate = this.stressPerseverenceAdditionService.addPerseverenceItem(stressUpdate);
         } else {
           stressUpdate = this.stressAdditionService.addStressItem(stressUpdate);
@@ -82,20 +81,20 @@ export class StressProcessorService {
    * @param stressUpdate obj containing who to update stress for and by what amount.
    * @param internal optional. If true does not trigger a whisper to a player. Default false.
    */
-  processStressLoss(stressUpdate: StressUpdate, internal=false): StressUpdate {
+  processStressLoss(stressUpdate: StressUpdate): StressUpdate {
     // If stress is already 0 we don't have to do anything
     if (stressUpdate.stressValue === 0) {
       return stressUpdate;
     }
 
-    for (let index = stressUpdate.amount; index < 0; index++) {
+    for (let index = ObjectHelper.deepCopy(stressUpdate).amount; index < 0; index++) {
       stressUpdate.stressValue = Math.max((stressUpdate.stressValue - 1), 0)
-      if(stressUpdate.stressValue % stressModifier === 0) {
+      if((stressUpdate.stressValue + 1) % stressModifier === 0) {
         stressUpdate = this.stressRemovalService.removeStressItem(stressUpdate);
       }
     }
 
-    return this.postProcessing(stressUpdate, internal);
+    return this.postProcessing(stressUpdate);
   }
 
   /**
@@ -113,12 +112,13 @@ export class StressProcessorService {
 
     this.postProcessing({
       ...stressedCharacter,
-      amount: 0
+      amount: 0,
+      oldStressValue: stressedCharacter.stressValue
     });
   }
 
-  private postProcessing(stressUpdate: StressUpdate, internal=false): StressUpdate {
-    if (stressUpdate.amount !== 0 && !internal) {
+  private postProcessing(stressUpdate: StressUpdate): StressUpdate {
+    if (stressUpdate.amount !== 0) {
       this.chatter.sendStressChangedMessage(stressUpdate);
     }
 

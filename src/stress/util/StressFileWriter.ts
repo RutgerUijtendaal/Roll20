@@ -129,7 +129,7 @@ export class StressFileWriter {
   }
 
   private stringFormat(str: string, ...args: string[]): string {
-    return str.replace(/{(\d+)}/g, (match, index) => args[index] || '');
+    return str.replace(/{(\d+)}/g, (_match, index) => args[index] || '');
   }
 
   private isHandoutPresent(playerCharacter: PlayerCharacter, handoutName: string): boolean {

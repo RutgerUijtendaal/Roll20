@@ -46,6 +46,6 @@ export abstract class Chatter {
   }
 
   protected stringFormat(str: string, ...args: string[]): string {
-    return str.replace(/{(\d+)}/g, (match, index) => args[index] || '');
+    return str.replace(/{(\d+)}/g, (_match, index) => args[index] || '');
   }
 }

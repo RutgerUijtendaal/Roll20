@@ -13,13 +13,18 @@ export class Roll20Util {
    */
   static updateNumericalPropertiesWithValueFromStressItem(
     playerCharacter: PlayerCharacter,
-    stress: StressItem
+    stress: StressItem,
+    reverse=false
   ) {
     stress.targetAttributes.forEach(targetAttribute => {
+      if(reverse) {
+        targetAttribute.amount *= -1;
+      }
+
       Roll20Util.updateNumericalPropertyWithValue(
         playerCharacter,
-        targetAttribute,
-        stress.attributeModifier
+        targetAttribute.target,
+        targetAttribute.amount
       );
     });
   }

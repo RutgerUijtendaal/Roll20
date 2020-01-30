@@ -1,4 +1,5 @@
 type StressType = 'debuff' | 'perseverence'
+type StressMessageType = 'Gained' | 'Lost'
 
 interface PlayerCharacter {
   characterId: string;
@@ -14,6 +15,7 @@ interface StressedCharacter extends PlayerCharacter {
 
 interface StressUpdate extends StressedCharacter {
   amount: number;
+  oldStressValue: number;
 }
 
 interface ItemBase {
@@ -23,11 +25,16 @@ interface ItemBase {
   weight: number;
 }
 
+interface AttributeModifier {
+  name: string,
+  target: string,
+  amount: number
+}
+
 interface StressItem extends ItemBase {
   type: 'debuff'
   mixin?: StressItem;
-  targetAttributes: string[];
-  attributeModifier: number;
+  targetAttributes: AttributeModifier[];
 }
 
 interface PerseverenceItem extends ItemBase {

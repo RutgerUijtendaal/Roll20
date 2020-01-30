@@ -93,14 +93,16 @@ export class StressCommandHandler {
   private handleAddStress(amountToAdd: number, stressedCharacter: StressedCharacter) {
     this.stressProcessor.processStressGain({
       ...stressedCharacter,
-      amount: amountToAdd
+      amount: amountToAdd,
+      oldStressValue: stressedCharacter.stressValue
     });
   }
 
   private handleRemoveStress(amountToRemove: number, stressedCharacter: StressedCharacter) {
     this.stressProcessor.processStressLoss({
       ...stressedCharacter,
-      amount: amountToRemove
+      amount: amountToRemove,
+      oldStressValue: stressedCharacter.stressValue
     });
   }
 

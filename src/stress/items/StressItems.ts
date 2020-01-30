@@ -3,8 +3,7 @@ const stressStrength: StressItem = {
   type: 'debuff',
   name: '-2 Strength',
   weight: 2,
-  targetAttributes: ['strength'],
-  attributeModifier: -2
+  targetAttributes: [{ name: 'Stength', target: 'strength', amount: -2 }]
 };
 
 const stressCharisma: StressItem = {
@@ -12,8 +11,7 @@ const stressCharisma: StressItem = {
   type: 'debuff',
   name: '-2 Charisma',
   weight: 2,
-  targetAttributes: ['charisma'],
-  attributeModifier: -2
+  targetAttributes: [{ name: 'Charisma', target: 'charisma', amount: -2 }]
 };
 
 const stressIntelligence: StressItem = {
@@ -21,8 +19,7 @@ const stressIntelligence: StressItem = {
   type: 'debuff',
   name: '-2 Intelligence',
   weight: 2,
-  targetAttributes: ['intelligence'],
-  attributeModifier: -2
+  targetAttributes: [{ name: 'Intelligence', target: 'intelligence', amount: -2 }]
 };
 
 const stressWisdom: StressItem = {
@@ -30,8 +27,7 @@ const stressWisdom: StressItem = {
   type: 'debuff',
   name: '-2 Wisdom',
   weight: 2,
-  targetAttributes: ['wisdom'],
-  attributeModifier: -2
+  targetAttributes: [{ name: 'Wisdom', target: 'wisdom', amount: -2 }]
 };
 
 const stressDexterity: StressItem = {
@@ -39,8 +35,7 @@ const stressDexterity: StressItem = {
   type: 'debuff',
   name: '-2 Dexterity',
   weight: 2,
-  targetAttributes: ['dexterity'],
-  attributeModifier: -2
+  targetAttributes: [{ name: 'Dexterity', target: 'dexterity', amount: -2 }]
 };
 
 const stressToHit: StressItem = {
@@ -48,8 +43,10 @@ const stressToHit: StressItem = {
   type: 'debuff',
   name: '-1 to Hit',
   weight: 1,
-  targetAttributes: ['global_melee_attack_bonus', 'global_ranged_attack_bonus'],
-  attributeModifier: -1
+  targetAttributes: [
+    { name: 'Melee Attack Bonus', target: 'global_melee_attack_bonus', amount: -2 },
+    { name: 'Ranged Attack Bonus', target: 'global_ranged_attack_bonus', amount: -2 }
+  ]
 };
 
 const stressDamage: StressItem = {
@@ -57,8 +54,10 @@ const stressDamage: StressItem = {
   type: 'debuff',
   name: '-1 to Damage',
   weight: 2,
-  targetAttributes: ['global_melee_damage_bonus', 'global_ranged_damage_bonus'],
-  attributeModifier: -1
+  targetAttributes: [
+    { name: 'Melee Damage Bonus', target: 'global_melee_damage_bonus', amount: -2 },
+    { name: 'Ranged Damage Bonus', target: 'global_ranged_damage_bonus', amount: -2 }
+  ]
 };
 
 const stressSavingThrow: StressItem = {
@@ -66,8 +65,7 @@ const stressSavingThrow: StressItem = {
   type: 'debuff',
   name: '-1 to Saving Throws',
   weight: 1,
-  targetAttributes: ['global_saving_bonus'],
-  attributeModifier: -1
+  targetAttributes: [{ name: 'Saving Throws', target: 'global_saving_bonus', amount: -1 }]
 };
 
 const stressPerception: StressItem = {
@@ -75,8 +73,7 @@ const stressPerception: StressItem = {
   type: 'debuff',
   name: '-1 to Perception',
   weight: 2,
-  targetAttributes: ['perception_bonus'],
-  attributeModifier: -1
+  targetAttributes: [{ name: 'Perception', target: 'perception_bonus', amount: -1 }]
 };
 
 const stressAthletics: StressItem = {
@@ -84,8 +81,7 @@ const stressAthletics: StressItem = {
   type: 'debuff',
   name: '-1 to Athletics',
   weight: 1,
-  targetAttributes: ['athletics_bonus'],
-  attributeModifier: -1
+  targetAttributes: [{ name: 'Atheletics', target: 'athletics_bonus', amount: -1 }]
 };
 
 const stressAcrobaticsAndPerformance: StressItem = {
@@ -93,8 +89,10 @@ const stressAcrobaticsAndPerformance: StressItem = {
   type: 'debuff',
   name: '-1 to Acrobatics & Performance',
   weight: 2,
-  targetAttributes: ['acrobatics_bonus', 'performance_bonus'],
-  attributeModifier: -1
+  targetAttributes: [
+    { name: 'Acrobatics', target: 'acrobatics_bonus', amount: -1 },
+    { name: 'Performance', target: 'performance_bonus', amount: -1 }
+  ]
 };
 
 const stressStealthAndSlightOfHand: StressItem = {
@@ -102,8 +100,10 @@ const stressStealthAndSlightOfHand: StressItem = {
   type: 'debuff',
   name: '-1 to Stealth and Sleight of Hand',
   weight: 2,
-  targetAttributes: ['stealth_bonus', 'sleightofhand_bonus'],
-  attributeModifier: -1
+  targetAttributes: [
+    { name: 'Stealth', target: 'stealth_bonus', amount: -1 },
+    { name: 'Sleight of Hand', target: 'sleightofhand_bonus', amount: -1 }
+  ]
 };
 
 const stressInsightAndMedince: StressItem = {
@@ -111,8 +111,10 @@ const stressInsightAndMedince: StressItem = {
   type: 'debuff',
   name: '-1 Insight and Medicine',
   weight: 2,
-  targetAttributes: ['insight_bonus', 'medicine_bonus'],
-  attributeModifier: -1
+  targetAttributes: [
+    { name: 'Insight', target: 'insight_bonus', amount: -1 },
+    { name: 'Medicine', target: 'medicine_bonus', amount: -1 }
+  ]
 };
 
 const stressHistoryReligionCulture: StressItem = {
@@ -120,8 +122,11 @@ const stressHistoryReligionCulture: StressItem = {
   type: 'debuff',
   name: '-1 History, Religion and Culture',
   weight: 2,
-  targetAttributes: ['history_bonus', 'religion_bonus', 'custom_skill_1_bonus'],
-  attributeModifier: -1
+  targetAttributes: [
+    { name: 'History', target: 'history_bonus', amount: -1 },
+    { name: 'Religion', target: 'religion_bonus', amount: -1 },
+    { name: 'Culture', target: 'custom_skill_1_bonus', amount: -1 }
+  ]
 };
 
 const stressInvestigaton: StressItem = {
@@ -129,8 +134,9 @@ const stressInvestigaton: StressItem = {
   type: 'debuff',
   name: '-1 Investigation',
   weight: 2,
-  targetAttributes: ['investigation_bonus'],
-  attributeModifier: -1
+  targetAttributes: [
+    { name: 'Investigation', target: 'investigation_bonus', amount: -1 }
+  ]
 };
 
 const stressPersuasionAndDeception: StressItem = {
@@ -138,8 +144,10 @@ const stressPersuasionAndDeception: StressItem = {
   type: 'debuff',
   name: '-1 Persuasion and Deception',
   weight: 2,
-  targetAttributes: ['persuasion_bonus','deception_bonus'],
-  attributeModifier: -1
+  targetAttributes: [
+    { name: 'Persuasion', target: 'persuasion_bonus', amount: -1 },
+    { name: 'Deception', target: 'deception_bonus', amount: -1 },
+  ]
 };
 
 const stressIntimidaton: StressItem = {
@@ -147,27 +155,53 @@ const stressIntimidaton: StressItem = {
   type: 'debuff',
   name: '-2 Intimidaton',
   weight: 2,
-  targetAttributes: ['intimidation_bonus'],
-  attributeModifier: -2
-};
+  targetAttributes: [
+    { name: 'Intimidation', target: 'intimidation_bonus', amount: -2 },
+  ]};
 
 const stressInitiative: StressItem = {
   id: 18,
   type: 'debuff',
   name: '-1 Initiative',
   weight: 2,
-  targetAttributes: ['initiative'],
-  attributeModifier: -1
-};
+  targetAttributes: [
+    { name: 'Initiative', target: 'initiative', amount: -1 },
+  ]};
 
 const stressSurvivalAndNature: StressItem = {
   id: 19,
   type: 'debuff',
   name: '-1 Survival and Nature',
   weight: 2,
-  targetAttributes: ['nature_bonus', 'survival_bonus'],
-  attributeModifier: -1
+  targetAttributes: [
+    { name: 'Survival', target: 'nature_bonus', amount: -1 },
+    { name: 'Nature', target: 'survival_bonus', amount: -1 },
+  ]
 };
+
+const stressAnimalHandlingIntimidation: StressItem = {
+  id: 20,
+  type: 'debuff',
+  name: '-2 Animal Handling, +1 Intimidation',
+  weight: 2,
+  targetAttributes: [
+    { name: 'Intimidation', target: 'intimidation_bonus', amount: 1 },
+    { name: 'Animal Handling', target: 'animalhandling_bonus', amount: -2 },
+  ]
+};
+
+const stressHitDie: StressItem = {
+  id: 21,
+  type: 'debuff',
+  name: '-1 Hit die',
+  weight: 3,
+  targetAttributes: [
+    { name: 'Intimidation', target: 'intimidation_bonus', amount: 1 },
+    { name: 'Animal Handling', target: 'animalhandling_bonus', amount: -2 },
+  ]
+};
+
+
 
 export const stresses: StressItem[] = [
   stressStrength,
@@ -175,18 +209,18 @@ export const stresses: StressItem[] = [
   stressIntelligence,
   stressDexterity,
   stressWisdom,
-  // stressToHit,
-  // stressDamage,
-  // stressSavingThrow,
-  // stressPerception,
-  // stressAthletics,
-  // stressAcrobaticsAndPerformance,
-  // stressStealthAndSlightOfHand,
-  // stressInsightAndMedince,
-  // stressHistoryReligionCulture,
-  // stressInvestigaton,
-  // stressPersuasionAndDeception,
-  // stressIntimidaton,
-  // stressInitiative,
-  // stressSurvivalAndNature
+  stressToHit,
+  stressDamage,
+  stressSavingThrow,
+  stressPerception,
+  stressAthletics,
+  stressAcrobaticsAndPerformance,
+  stressStealthAndSlightOfHand,
+  stressInsightAndMedince,
+  stressHistoryReligionCulture,
+  stressInvestigaton,
+  stressPersuasionAndDeception,
+  stressIntimidaton,
+  stressInitiative,
+  stressSurvivalAndNature,
 ];

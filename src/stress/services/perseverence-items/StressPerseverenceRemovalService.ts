@@ -65,6 +65,14 @@ export class StressPerseverenceRemovalService {
   ): StressedCharacter {
     switch (perseverence.id) {
       case 1: // Relax
+        stressedCharacter = this.stressProcessorService.processStressLoss(
+          {
+            ...stressedCharacter,
+            amount: -30,
+            oldStressValue: stressedCharacter.stressValue
+          },
+        );
+        stressedCharacter.perseverences.splice(index, 1);
         break;
       case 2: // Not Today
         stressedCharacter.perseverences.splice(index, 1);

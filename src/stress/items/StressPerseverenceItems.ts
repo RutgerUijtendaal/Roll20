@@ -70,8 +70,8 @@ const perseverenceFocus: PerseverenceItem = {
 
 export const perseverences: PerseverenceItem[] = [
   perseverenceRelax,
-  // perseverenceNotToday,
-  // perseverenceUnstoppable,
-  // perseverenceEnoughOfThisShit,
-  // perseverenceFocus
+  perseverenceNotToday,
+  perseverenceUnstoppable,
+  perseverenceEnoughOfThisShit,
+  perseverenceFocus
 ]
