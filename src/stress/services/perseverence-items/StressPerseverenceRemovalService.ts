@@ -81,18 +81,18 @@ export class StressPerseverenceRemovalService {
         stressedCharacter.perseverences.splice(index, 1);
         break;
       case 4: // Enough of this shit
-        perseverence.attributeModifier = perseverence.attributeModifier!! * -1;
         Roll20Util.updateNumericalPropertiesWithValueFromPerseverenceItem(
           stressedCharacter,
-          perseverence
+          perseverence,
+          true
         );
         stressedCharacter.perseverences.splice(index, 1);
         break;
       case 5: // Focus
-        perseverence.attributeModifier = perseverence.attributeModifier!! * -1;
         Roll20Util.updateNumericalPropertiesWithValueFromPerseverenceItem(
           stressedCharacter,
-          perseverence
+          perseverence,
+          true
         );
         stressedCharacter.perseverences.splice(index, 1);
         break;

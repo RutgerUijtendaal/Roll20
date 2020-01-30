@@ -41,8 +41,7 @@ interface PerseverenceItem extends ItemBase {
   type: 'perseverence';
   uuid?: string;
   desc: string;
-  targetAttributes?: string[];
-  attributeModifier?: number;
+  targetAttributes?: AttributeModifier[];
 }
 
 interface StressState {

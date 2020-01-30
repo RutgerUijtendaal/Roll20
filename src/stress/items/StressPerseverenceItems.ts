@@ -28,13 +28,12 @@ const perseverenceEnoughOfThisShit: PerseverenceItem = {
   type: 'perseverence',
   name: "Enough of this shit",
   desc: "+2 to hit, damage and save DCs",
-  attributeModifier: 2,
   targetAttributes: [
-    'global_melee_damage_bonus', 
-    'global_ranged_damage_bonus',
-    'global_melee_attack_bonus', 
-    'global_ranged_attack_bonus',
-    'global_saving_bonus'
+    { name: 'Melee Damage', target: 'global_melee_damage_bonus', amount: 2 },
+    { name: 'Ranged Damage', target: 'global_ranged_damage_bonus', amount: 2 },
+    { name: 'Melee Attack', target: 'global_melee_attack_bonus', amount: 2 },
+    { name: 'Ranged Attack', target: 'global_ranged_attack_bonus', amount: 2 },
+    { name: 'Saving Throws', target: 'global_saving_bonus', amount: 2 }
   ],
   weight: 1
 }
@@ -44,26 +43,8 @@ const perseverenceFocus: PerseverenceItem = {
   type: 'perseverence',
   name: "Focus",
   desc: "+2 to all skill checks",
-  attributeModifier: 2,
   targetAttributes: [
-    'acrobatics_bonus',
-    'animalhandling_bonus',
-    'arcana_bonus',
-    'athletics_bonus',
-    'deception_bonus',
-    'history_bonus',
-    'insight_bonus',
-    'intimidation_bonus',
-    'investigation_bonus',
-    'medicine_bonus',
-    'nature_bonus',
-    'perception_bonus',
-    'performance_bonus',
-    'persuasion_bonus',
-    'religion_bonus',
-    'sleightofhand_bonus',
-    'stealth_bonus',
-    'survival_bonus'
+    { name: 'Skill Checks', target: 'global_check_bonus', amount: 2 },
   ],
   weight: 1
 }

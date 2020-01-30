@@ -1,7 +1,7 @@
 const stressStrength: StressItem = {
   id: 1,
   type: 'debuff',
-  name: '-2 Strength',
+  name: '-2 to Strength',
   weight: 2,
   targetAttributes: [{ name: 'Stength', target: 'strength', amount: -2 }]
 };
@@ -9,7 +9,7 @@ const stressStrength: StressItem = {
 const stressCharisma: StressItem = {
   id: 2,
   type: 'debuff',
-  name: '-2 Charisma',
+  name: '-2 to Charisma',
   weight: 2,
   targetAttributes: [{ name: 'Charisma', target: 'charisma', amount: -2 }]
 };
@@ -17,7 +17,7 @@ const stressCharisma: StressItem = {
 const stressIntelligence: StressItem = {
   id: 3,
   type: 'debuff',
-  name: '-2 Intelligence',
+  name: '-2 to Intelligence',
   weight: 2,
   targetAttributes: [{ name: 'Intelligence', target: 'intelligence', amount: -2 }]
 };
@@ -25,7 +25,7 @@ const stressIntelligence: StressItem = {
 const stressWisdom: StressItem = {
   id: 4,
   type: 'debuff',
-  name: '-2 Wisdom',
+  name: '-2 to Wisdom',
   weight: 2,
   targetAttributes: [{ name: 'Wisdom', target: 'wisdom', amount: -2 }]
 };
@@ -33,7 +33,7 @@ const stressWisdom: StressItem = {
 const stressDexterity: StressItem = {
   id: 5,
   type: 'debuff',
-  name: '-2 Dexterity',
+  name: '-2 to Dexterity',
   weight: 2,
   targetAttributes: [{ name: 'Dexterity', target: 'dexterity', amount: -2 }]
 };
@@ -44,8 +44,8 @@ const stressToHit: StressItem = {
   name: '-1 to Hit',
   weight: 1,
   targetAttributes: [
-    { name: 'Melee Attack Bonus', target: 'global_melee_attack_bonus', amount: -2 },
-    { name: 'Ranged Attack Bonus', target: 'global_ranged_attack_bonus', amount: -2 }
+    { name: 'Melee Attack Bonus', target: 'global_melee_attack_bonus', amount: -1 },
+    { name: 'Ranged Attack Bonus', target: 'global_ranged_attack_bonus', amount: -1 }
   ]
 };
 
@@ -55,8 +55,8 @@ const stressDamage: StressItem = {
   name: '-1 to Damage',
   weight: 2,
   targetAttributes: [
-    { name: 'Melee Damage Bonus', target: 'global_melee_damage_bonus', amount: -2 },
-    { name: 'Ranged Damage Bonus', target: 'global_ranged_damage_bonus', amount: -2 }
+    { name: 'Melee Damage Bonus', target: 'global_melee_damage_bonus', amount: -1 },
+    { name: 'Ranged Damage Bonus', target: 'global_ranged_damage_bonus', amount: -1 }
   ]
 };
 
@@ -109,7 +109,7 @@ const stressStealthAndSlightOfHand: StressItem = {
 const stressInsightAndMedince: StressItem = {
   id: 13,
   type: 'debuff',
-  name: '-1 Insight and Medicine',
+  name: '-1 to Insight and Medicine',
   weight: 2,
   targetAttributes: [
     { name: 'Insight', target: 'insight_bonus', amount: -1 },
@@ -120,7 +120,7 @@ const stressInsightAndMedince: StressItem = {
 const stressHistoryReligionCulture: StressItem = {
   id: 14,
   type: 'debuff',
-  name: '-1 History, Religion and Culture',
+  name: '-1 to History, Religion and Culture',
   weight: 2,
   targetAttributes: [
     { name: 'History', target: 'history_bonus', amount: -1 },
@@ -132,7 +132,7 @@ const stressHistoryReligionCulture: StressItem = {
 const stressInvestigaton: StressItem = {
   id: 15,
   type: 'debuff',
-  name: '-1 Investigation',
+  name: '-1 to Investigation',
   weight: 2,
   targetAttributes: [
     { name: 'Investigation', target: 'investigation_bonus', amount: -1 }
@@ -142,7 +142,7 @@ const stressInvestigaton: StressItem = {
 const stressPersuasionAndDeception: StressItem = {
   id: 16,
   type: 'debuff',
-  name: '-1 Persuasion and Deception',
+  name: '-1 to Persuasion and Deception',
   weight: 2,
   targetAttributes: [
     { name: 'Persuasion', target: 'persuasion_bonus', amount: -1 },
@@ -153,7 +153,7 @@ const stressPersuasionAndDeception: StressItem = {
 const stressIntimidaton: StressItem = {
   id: 17,
   type: 'debuff',
-  name: '-2 Intimidaton',
+  name: '-2 to Intimidaton',
   weight: 2,
   targetAttributes: [
     { name: 'Intimidation', target: 'intimidation_bonus', amount: -2 },
@@ -162,7 +162,7 @@ const stressIntimidaton: StressItem = {
 const stressInitiative: StressItem = {
   id: 18,
   type: 'debuff',
-  name: '-1 Initiative',
+  name: '-1 to Initiative',
   weight: 2,
   targetAttributes: [
     { name: 'Initiative', target: 'initiative', amount: -1 },
@@ -171,7 +171,7 @@ const stressInitiative: StressItem = {
 const stressSurvivalAndNature: StressItem = {
   id: 19,
   type: 'debuff',
-  name: '-1 Survival and Nature',
+  name: '-1 to Survival and Nature',
   weight: 2,
   targetAttributes: [
     { name: 'Survival', target: 'nature_bonus', amount: -1 },
@@ -182,19 +182,8 @@ const stressSurvivalAndNature: StressItem = {
 const stressAnimalHandlingIntimidation: StressItem = {
   id: 20,
   type: 'debuff',
-  name: '-2 Animal Handling, +1 Intimidation',
+  name: '-2 to Animal Handling, +1 to Intimidation',
   weight: 2,
-  targetAttributes: [
-    { name: 'Intimidation', target: 'intimidation_bonus', amount: 1 },
-    { name: 'Animal Handling', target: 'animalhandling_bonus', amount: -2 },
-  ]
-};
-
-const stressHitDie: StressItem = {
-  id: 21,
-  type: 'debuff',
-  name: '-1 Hit die',
-  weight: 3,
   targetAttributes: [
     { name: 'Intimidation', target: 'intimidation_bonus', amount: 1 },
     { name: 'Animal Handling', target: 'animalhandling_bonus', amount: -2 },

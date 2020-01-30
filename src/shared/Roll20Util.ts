@@ -38,18 +38,21 @@ export class Roll20Util {
    */
   static updateNumericalPropertiesWithValueFromPerseverenceItem(
     playerCharacter: PlayerCharacter,
-    perseverence: PerseverenceItem
+    perseverence: PerseverenceItem,
+    reverse=false
   ) {
-    if(perseverence.targetAttributes === undefined || 
-      perseverence.attributeModifier === undefined) {
+    if(perseverence.targetAttributes === undefined) {
       return;
     }
 
     perseverence.targetAttributes.forEach(targetAttribute => {
+      if(reverse) {
+        targetAttribute.amount *= -1;
+      }
       Roll20Util.updateNumericalPropertyWithValue(
         playerCharacter,
-        targetAttribute,
-        perseverence.attributeModifier!! // For some reason linting doesn't recognize this as checked?
+        targetAttribute.target,
+        targetAttribute.amount 
       );
     });
   }
