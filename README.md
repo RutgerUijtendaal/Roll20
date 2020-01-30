@@ -10,21 +10,25 @@ This repo consists of work done on modules to enhance the DnD campaign I'm curre
 
 ### Stress
 
-A Stress module exists that allows for characters to get an increasing amount of stress for being in high pressure situations. Stress can give different types of character debuffs.
+The Stress module enables characters to get an increasing amount of stress for being in high pressure situations. Stress can give different types of character debuffs or, if you're lucky, buffs.
 
 #### Commands
 
-3 commands exist for a player character to control its stress level. What player is handled is determined by the character typing in the chat:
+A chat command exists to register a Character as part of the stress module: `!stress`.
 
-* !stress - registers a new StressCharacter.
-* !+stress [number] - Adds [number] amount of stress to the character
-* !-stress [number] - Removes [number] amount of stress to the character
+This registers a character and creates a stress Ability on the character with which the player can control its stress.
+
+This command also creates a note for the registering player displays information about his/her current stress level.
 
 #### Debuffs
 
 Debuffs are gained or lost on 5 stress breakpoints. On every multiple of 5 a stress is lost or gained depending on if stress is going down or up.
 
 Each stress is associated with an addition and removal effect which get automatically called whenever they are added or removed respectively.
+
+#### Perseverence
+
+At any point when a normal stress item is added a chance exists that instead a Perseverence is added. Contrary to debuffs these provide benefits to a player character and have to be manually removed (when the DM deems its effect over).
 
 ## Typescript
 
