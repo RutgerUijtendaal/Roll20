@@ -14,10 +14,10 @@ export class Roll20Util {
   static updateNumericalPropertiesWithValueFromStressItem(
     playerCharacter: PlayerCharacter,
     stress: StressItem,
-    reverse=false
+    reverse = false
   ) {
     stress.targetAttributes.forEach(targetAttribute => {
-      if(reverse) {
+      if (reverse) {
         targetAttribute.amount *= -1;
       }
 
@@ -39,20 +39,20 @@ export class Roll20Util {
   static updateNumericalPropertiesWithValueFromPerseverenceItem(
     playerCharacter: PlayerCharacter,
     perseverence: PerseverenceItem,
-    reverse=false
+    reverse = false
   ) {
-    if(perseverence.targetAttributes === undefined) {
+    if (perseverence.targetAttributes === undefined) {
       return;
     }
 
     perseverence.targetAttributes.forEach(targetAttribute => {
-      if(reverse) {
+      if (reverse) {
         targetAttribute.amount *= -1;
       }
       Roll20Util.updateNumericalPropertyWithValue(
         playerCharacter,
         targetAttribute.target,
-        targetAttribute.amount 
+        targetAttribute.amount
       );
     });
   }
@@ -102,7 +102,7 @@ export class Roll20Util {
    * Get a {@link Handout} on a player by its name. All handouts with this name are
    * retrieved and then filtered down by playerId. If more than one handout still remain
    * this function returns undefined.
-   * 
+   *
    * @param handoutName name of the handout
    * @param playerId player to get the handout for.
    */
@@ -120,7 +120,7 @@ export class Roll20Util {
       return handout.get('inplayerjournals').indexOf(playerId) != -1;
     });
 
-    if(handouts.length > 1) {
+    if (handouts.length > 1) {
       Logger.error(
         `Found more than 1 ability for ${handoutName}, aborting to ensure nothing goes wrong`
       );
@@ -133,7 +133,7 @@ export class Roll20Util {
   /**
    * Get a list of {@link Handout}s with a specific name. This is non player specific
    * and returns all handouts found with this name.
-   * 
+   *
    * @param handoutName name of the handout to find.
    */
   static getHandoutsByName(handoutName: string): Handout[] | undefined {
@@ -152,7 +152,7 @@ export class Roll20Util {
   /**
    * Get an ability on a specified character by name. If more tha one ability with this name
    * exists, or no ability can be found this function returns undefined.
-   * 
+   *
    * @param abilityName name of the ability to get.
    * @param characterId id of the character to get the ability from.
    */

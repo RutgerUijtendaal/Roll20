@@ -134,9 +134,7 @@ const stressInvestigaton: StressItem = {
   type: 'debuff',
   name: '-1 to Investigation',
   weight: 2,
-  targetAttributes: [
-    { name: 'Investigation', target: 'investigation_bonus', amount: -1 }
-  ]
+  targetAttributes: [{ name: 'Investigation', target: 'investigation_bonus', amount: -1 }]
 };
 
 const stressPersuasionAndDeception: StressItem = {
@@ -146,7 +144,7 @@ const stressPersuasionAndDeception: StressItem = {
   weight: 2,
   targetAttributes: [
     { name: 'Persuasion', target: 'persuasion_bonus', amount: -1 },
-    { name: 'Deception', target: 'deception_bonus', amount: -1 },
+    { name: 'Deception', target: 'deception_bonus', amount: -1 }
   ]
 };
 
@@ -155,18 +153,16 @@ const stressIntimidaton: StressItem = {
   type: 'debuff',
   name: '-2 to Intimidaton',
   weight: 2,
-  targetAttributes: [
-    { name: 'Intimidation', target: 'intimidation_bonus', amount: -2 },
-  ]};
+  targetAttributes: [{ name: 'Intimidation', target: 'intimidation_bonus', amount: -2 }]
+};
 
 const stressInitiative: StressItem = {
   id: 18,
   type: 'debuff',
   name: '-1 to Initiative',
   weight: 2,
-  targetAttributes: [
-    { name: 'Initiative', target: 'initiative', amount: -1 },
-  ]};
+  targetAttributes: [{ name: 'Initiative', target: 'initiative', amount: -1 }]
+};
 
 const stressSurvivalAndNature: StressItem = {
   id: 19,
@@ -175,7 +171,7 @@ const stressSurvivalAndNature: StressItem = {
   weight: 2,
   targetAttributes: [
     { name: 'Survival', target: 'nature_bonus', amount: -1 },
-    { name: 'Nature', target: 'survival_bonus', amount: -1 },
+    { name: 'Nature', target: 'survival_bonus', amount: -1 }
   ]
 };
 
@@ -186,11 +182,9 @@ const stressAnimalHandlingIntimidation: StressItem = {
   weight: 2,
   targetAttributes: [
     { name: 'Intimidation', target: 'intimidation_bonus', amount: 1 },
-    { name: 'Animal Handling', target: 'animalhandling_bonus', amount: -2 },
+    { name: 'Animal Handling', target: 'animalhandling_bonus', amount: -2 }
   ]
 };
-
-
 
 export const stresses: StressItem[] = [
   stressStrength,
@@ -211,5 +205,5 @@ export const stresses: StressItem[] = [
   stressPersuasionAndDeception,
   stressIntimidaton,
   stressInitiative,
-  stressSurvivalAndNature,
+  stressSurvivalAndNature
 ];
