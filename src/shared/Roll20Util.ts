@@ -197,7 +197,7 @@ export class Roll20Util {
       Logger.error(
         `Could not find property with name ${attributeName} on character ${playerCharacter.name}, creating...`
       );
-      Roll20Util.createPropertyWithValueZeroOnCharacter(playerCharacter, attributeName);
+      Roll20Util.createPropertyWithDefaultValueOnCharacter(playerCharacter, attributeName);
       // Recursion woooo~
       Roll20Util.updateNumericalPropertyWithValue(playerCharacter, attributeName, amount);
       return;
@@ -211,13 +211,21 @@ export class Roll20Util {
     property.setWithWorker('current', String(current + amount));
   }
 
-  private static createPropertyWithValueZeroOnCharacter(
+  private static createPropertyWithDefaultValueOnCharacter(
     playerCharacter: PlayerCharacter,
     attributeName: string
   ) {
+    const primaryStats = ['strength', 'charisma', 'dexterity', 'wisdom', 'intelligence']
+    
+    let defaultValue = 0;
+
+    if(primaryStats.indexOf(attributeName) !== -1) {
+      defaultValue = 10;
+    }
+
     const attribute: AttributeCreationProperties = {
       _characterid: playerCharacter.characterId,
-      current: '0',
+      current: ''+defaultValue,
       name: attributeName
     };
 
