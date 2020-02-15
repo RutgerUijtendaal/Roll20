@@ -1,11 +1,9 @@
 # Dependencies 
 node_modules/
 
-# Build dir
-dist/
-
 # Test reports
 .nyc_output/
 
 # Dot files
 .env
+

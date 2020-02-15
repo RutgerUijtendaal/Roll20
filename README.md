@@ -6,6 +6,10 @@
 
 This repo consists of work done on modules to enhance the DnD campaign I'm currently a part of.
 
+## Installation
+
+To install the entire package simply copy the `bundle.js` content as a script into your Roll20 scripts.
+
 ## Modules
 
 ### Stress
