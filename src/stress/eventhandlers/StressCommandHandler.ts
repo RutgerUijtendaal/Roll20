@@ -37,7 +37,11 @@ export class StressCommandHandler {
   }
 
   handle(message: ChatEventData) {
-    if (message.type !== 'api' && !(message.content.indexOf('!+-stress') !== -1 || message.content.indexOf('!perseverence') !== -1)) {
+    if (message.type !== 'api') {
+      return;
+    }
+
+    if(message.content.indexOf('!+-stress') === -1 && message.content.indexOf('!perseverence') === -1) {
       return;
     }
 
