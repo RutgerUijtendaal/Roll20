@@ -29,7 +29,7 @@
     "@types/webpack": "^4.41.3",
     "chai": "^4.2.0",
     "heward": "0.0.1",
-    "mocha": "^7.0.1",
+    "mocha": "^10.2.0",
     "mocha-typescript": "^1.1.17",
     "nyc": "^15.0.0",
     "source-map-support": "^0.5.16",
